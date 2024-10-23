@@ -8,7 +8,7 @@ import jakarta.persistence.Id;
 @Entity // marks class as JPA entity which means that it will be mapped to the user table in our db
 public class User {
     @Id // marks this variable as the unique id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) //
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // indicates that the database will handle the ID generation
     private int id;
 
     private String name;
