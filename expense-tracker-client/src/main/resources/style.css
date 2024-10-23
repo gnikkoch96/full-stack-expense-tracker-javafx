@@ -1,0 +1,76 @@
+/* generic classes */
+Label, TextField, Button, PasswordField{
+    -fx-border-width: 2px;
+    -fx-border-color: #fff;
+}
+
+Button{
+    -fx-cursor: hand;
+}
+
+Button:hover{
+    -fx-opacity: 0.5;
+}
+
+/* text */
+.text-size-lg{
+    -fx-font-size: 36px;
+}
+
+.text-size-md{
+    -fx-font-size: 24px;
+}
+
+.text-size-sm{
+
+}
+
+.text-white{
+    -fx-text-fill: #fff;
+}
+
+.text-light-gray{
+    -fx-text-fill: #BEB9B9;
+}
+
+.text-weight-700{
+    -fx-font-weight: 700;
+}
+
+/* background */
+.bg-light-blue{
+    -fx-background-color: #377BE1;
+}
+
+
+/* text decorations */
+.text-underline{
+    -fx-underline: true;
+}
+
+/* border */
+.rounded-border{
+    -fx-border-radius: 10px;
+}
+
+/* custom classes */
+.main-background{
+    -fx-background-color: #383838;
+}
+
+.header{
+    -fx-font-size: 96px;
+    -fx-font-weight: 300;
+}
+
+.field-background{
+    -fx-background-color: #515050;
+}
+
+.link-text{
+    -fx-cursor: hand;
+}
+
+.link-text:hover{
+    -fx-text-fill: #4265c7;
+}
