@@ -4,7 +4,7 @@ import com.example.expense_tracker_server.entity.User;
 import com.example.expense_tracker_server.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -15,17 +15,19 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    private PasswordEncoder passwordEncoder;
+    private BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserController(PasswordEncoder passwordEncoder){
-        this.passwordEncoder = passwordEncoder;
+    public UserController(){
+        passwordEncoder = new BCryptPasswordEncoder();
     }
 
     // creating a new user
     @PostMapping
     public ResponseEntity<User> createUser(@RequestParam String name, @RequestParam String email,
                                             @RequestParam String password){
+        System.out.println("Creating User");
+
         // hash the password before saving it
         String hashedPassword = passwordEncoder.encode(password);
 
@@ -39,9 +41,9 @@ public class UserController {
         // get the user by email
         Optional<User> user = userService.getUserByEmail(email);
 
-        if(user.isEmpty() || user == null){
+        if(user.isEmpty()){
             // could not find email, return error
-            return ResponseEntity.status(401).body("Invalid Email");
+            return ResponseEntity.status(401).body("Email is not registered into our database");
         }
 
         // check if the entered password matches
