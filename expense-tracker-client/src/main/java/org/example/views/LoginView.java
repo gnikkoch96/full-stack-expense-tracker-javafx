@@ -1,6 +1,7 @@
 package org.example.views;
 
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -37,6 +38,11 @@ public class LoginView implements View{
 
         expenseTrackerLabel.getStyleClass().addAll("header", "text-white");
         VBox loginForm = createLoginForm();
+
+        // optional: prevents fields from being focused so that you can see input prompts
+        for(Node node : loginForm.getChildren()){
+            node.setFocusTraversable(false);
+        }
 
         vBox.getChildren().addAll(expenseTrackerLabel, loginForm);
         return new Scene(vBox, Config.APP_WIDTH, Config.APP_HEIGHT);
