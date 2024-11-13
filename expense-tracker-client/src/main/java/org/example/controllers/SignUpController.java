@@ -2,6 +2,7 @@ package org.example.controllers;
 
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
+import org.example.utils.ApiHandler;
 import org.example.views.LoginView;
 import org.example.views.SignUpView;
 
@@ -25,7 +26,7 @@ public class SignUpController {
                 String password = signUpView.getPasswordField().getText();
 
                 // call on the spring user api to create the user
-
+                ApiHandler.fetchApiResponse("/api/users", ApiHandler.RequestMethod.POST);
             }
         });
 
