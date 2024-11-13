@@ -18,7 +18,6 @@ public class SignUpView implements View{
     private TextField nameField = new TextField();
     private TextField usernameField = new TextField();
 
-
     private PasswordField passwordField = new PasswordField();
     private PasswordField rePasswordField = new PasswordField();
 
