@@ -1,10 +1,14 @@
 package org.example.controllers;
 
+import com.google.gson.JsonObject;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import org.example.utils.ApiHandler;
 import org.example.views.LoginView;
 import org.example.views.SignUpView;
+
+import java.io.IOException;
+import java.net.HttpURLConnection;
 
 public class SignUpController {
     private SignUpView signUpView;
@@ -25,8 +29,35 @@ public class SignUpController {
                 String email = signUpView.getUsernameField().getText();
                 String password = signUpView.getPasswordField().getText();
 
-                // call on the spring user api to create the user
-                ApiHandler.fetchApiResponse("/api/users", ApiHandler.RequestMethod.POST);
+                JsonObject jsonData = new JsonObject();
+                jsonData.addProperty("name", name);
+                jsonData.addProperty("email", email);
+                jsonData.addProperty("password", password);
+
+                HttpURLConnection httpConn = null;
+                try {
+                    // call on the spring user api to create the user
+                    httpConn = ApiHandler.fetchApiResponse("/api/users",
+                                    ApiHandler.RequestMethod.POST, jsonData);
+
+                    // failed to create user
+                    if(httpConn != null && httpConn.getResponseCode() != 200){
+                        System.out.println("Error: " + httpConn.getResponseCode());
+                        return;
+                    }
+
+                    // successfully created user
+                    // todo replace with dialog message and then take user back to login view
+                    System.out.println("Successfully Created User");
+                    new LoginView().show();
+
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }finally {
+                    // safely disconnect from the api
+                    if(httpConn != null)
+                        httpConn.disconnect();
+                }
             }
         });
 
@@ -48,6 +79,22 @@ public class SignUpController {
         }
 
         // email already exists
+        HttpURLConnection httpConn = null;
+        try {
+            // call on the spring user api to get user by email
+            httpConn = ApiHandler.fetchApiResponse("/api/users?email=" + signUpView.getUsernameField().getText(),
+                    ApiHandler.RequestMethod.GET, null);
+
+            if(httpConn != null && httpConn.getResponseCode() == 200){
+                return false;
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }finally {
+            // safely disconnect from the api
+            if(httpConn != null)
+                httpConn.disconnect();
+        }
 
         // missing name
         if(signUpView.getNameField().getText().isEmpty()){
