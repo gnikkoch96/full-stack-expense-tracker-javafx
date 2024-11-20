@@ -4,6 +4,7 @@ import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import org.example.utils.ApiHandler;
 import org.example.utils.ViewNavigator;
+import org.example.views.DashboardView;
 import org.example.views.LoginView;
 import org.example.views.SignUpView;
 
@@ -36,14 +37,14 @@ public class LoginController {
                             "/api/users/login?email=" + email + "&password=" + password,
                             ApiHandler.RequestMethod.POST, null);
 
+                    // failed to login
                     if(httpConn != null && httpConn.getResponseCode() != 200){
                         return;
                     }
 
-                    // switch to dashboard view
+                    // login success, switch to dashboard view
                     String apiResults = ApiHandler.readApiResponse(httpConn);
-                    System.out.println(apiResults);
-                    System.out.println("Switching to Dashboard View");
+                    new DashboardView(apiResults).show();
 
                 } catch (IOException e) {
                     throw new RuntimeException(e);
@@ -54,7 +55,6 @@ public class LoginController {
                 }
             }
         });
-
 
         loginView.getSignUpLabel().setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override

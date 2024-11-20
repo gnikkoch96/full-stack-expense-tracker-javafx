@@ -74,3 +74,8 @@ Button:hover{
 .link-text:hover{
     -fx-text-fill: #4265c7;
 }
+
+/* specific classes */
+.dashboard-padding{
+    -fx-padding: 33px 43px;
+}

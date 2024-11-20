@@ -3,6 +3,7 @@ package org.example;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import org.example.utils.ViewNavigator;
+import org.example.views.DashboardView;
 import org.example.views.LoginView;
 
 public class MainApp extends Application {
@@ -11,7 +12,9 @@ public class MainApp extends Application {
         ViewNavigator.setMainStage(stage);
 
         // the login view will be the first to be shown when the app is ran
-        LoginView loginView = new LoginView();
-        loginView.show();
+//        LoginView loginView = new LoginView();
+//        loginView.show();
+
+        new DashboardView("newemail@email.com").show();
     }
 }
