@@ -34,7 +34,7 @@ public class UserController {
         Optional<User> user = userService.getUserByEmail(email);
 
         if (user.isPresent()) {
-            return ResponseEntity.ok(user.get());  // if the user exists, return the user
+            return ResponseEntity.status(HttpStatus.OK).body(user.get());  // if the user exists, return the user
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();  // if the user doesn't exist, return 404
         }
@@ -60,16 +60,16 @@ public class UserController {
 
         if(user.isEmpty()){
             // could not find email, return error
-            return ResponseEntity.status(401).body("Email is not registered into our database");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Email is not registered into our database");
         }
 
         // check if the entered password matches
         boolean isAuthenticated = passwordEncoder.matches(password, user.get().getPassword());
 
         if(isAuthenticated){
-            return ResponseEntity.status(200).body("Login Successful!");
+            return ResponseEntity.status(HttpStatus.OK).body(user.get().getEmail());
         }else{
-            return ResponseEntity.status(401).body("Invalid Password");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid Password");
         }
     }
 
@@ -77,7 +77,7 @@ public class UserController {
     @DeleteMapping
     public ResponseEntity<String> deleteUserByEmail(@RequestParam String email){
         userService.deleteUserByEmail(email);
-        return ResponseEntity.status(204).body("Account has been deleted.");
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Account has been deleted.");
     }
 
 }
