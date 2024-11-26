@@ -3,22 +3,23 @@ package com.example.expense_tracker_server.entity;
 import jakarta.persistence.*;
 
 @Entity // marks class as JPA entity which means that it will be mapped to the user table in our db
-@Table(name = "users") // labels this entity to the proper name which is "users"
+@Table(name = "user") // labels this entity to the proper name which is "users"
 public class User {
     @Id // marks this variable as the unique id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // indicates that the database will handle the ID generation
     private int id;
 
+    @Column(name="name")
     private String name;
+
+    @Column(name="email")
     private String email;
+
+    @Column(name="password")
     private String password;
 
     public int getId() {
         return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getName() {
