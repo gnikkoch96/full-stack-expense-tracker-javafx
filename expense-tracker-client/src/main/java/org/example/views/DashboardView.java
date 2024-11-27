@@ -1,8 +1,13 @@
 package org.example.views;
 
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import org.example.controllers.DashboardController;
@@ -39,15 +44,40 @@ public class DashboardView implements View{
     }
 
     private Scene createScene(){
+        // menu
+        MenuBar menuBar = createMenuBar();
+
         // layout
         VBox vBox = new VBox();
-        vBox.getStyleClass().addAll("main-background", "dashboard-padding");
-        vBox.setAlignment(Pos.TOP_CENTER);
+        vBox.getStyleClass().addAll("main-background");
+        vBox.getChildren().addAll(menuBar);
+
+        // main content (Note: this is to prevent the padding from affecting menu)
+        VBox vBoxContent = new VBox();
+        vBoxContent.getStyleClass().addAll("dashboard-padding");
+        vBoxContent.setAlignment(Pos.TOP_CENTER);
 
         HBox balanceSummaryBox = createBalanceSummaryBox();
 
-        vBox.getChildren().addAll(balanceSummaryBox);
+        vBoxContent.getChildren().addAll(balanceSummaryBox);
+        vBox.getChildren().addAll(vBoxContent);
         return new Scene(vBox, Config.APP_WIDTH, Config.APP_HEIGHT);
+    }
+
+    private MenuBar createMenuBar(){
+        MenuBar menuBar = new MenuBar();
+        Menu fileMenu = new Menu("File");
+        MenuItem createCategoryMenuItem = new MenuItem("Create Category");
+        createCategoryMenuItem.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+
+            }
+        });
+
+        fileMenu.getItems().addAll(createCategoryMenuItem);
+        menuBar.getMenus().addAll(fileMenu);
+        return menuBar;
     }
 
     private HBox createBalanceSummaryBox(){

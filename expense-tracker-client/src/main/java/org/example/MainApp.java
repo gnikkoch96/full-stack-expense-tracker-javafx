@@ -9,6 +9,7 @@ import org.example.views.LoginView;
 public class MainApp extends Application {
     @Override
     public void start(Stage stage) throws Exception {
+        stage.setTitle("Expense Tracker");
         ViewNavigator.setMainStage(stage);
 
         // the login view will be the first to be shown when the app is ran
