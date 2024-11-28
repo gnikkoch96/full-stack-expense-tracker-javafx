@@ -17,8 +17,8 @@ public class TransactionCategory {
         return id;
     }
 
-    public int getUserId() {
-        return userId;
+    public User getUser(){
+        return user;
     }
 
     public String getCategoryName() {
