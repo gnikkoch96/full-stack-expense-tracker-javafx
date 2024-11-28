@@ -8,8 +8,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
+import org.example.utils.ApiHandler;
 
 import java.awt.*;
+import java.net.HttpURLConnection;
 
 // Note: the way the dialog works is that it expects to return something but that is not necessary for us
 public class CreateNewCategoryDialog extends Dialog<String> {
@@ -60,7 +62,9 @@ public class CreateNewCategoryDialog extends Dialog<String> {
                 // we don't want. They are the last two characters so we substring them out before storing them into the database.
                 String hexColorValue = color.substring(0, color.length() - 2);
 
-
+                HttpURLConnection httpURLConnection = ApiHandler.fetchApiResponse(
+                        "/api/transaction-categories", ApiHandler.RequestMethod.POST, null
+                );
             }
         });
 
