@@ -37,10 +37,11 @@ public class DashboardController {
             JsonObject jsonObject = JsonParser.parseString(userDataJson).getAsJsonObject();
 
             // create user
+            int id = jsonObject.get("id").getAsInt();
             String name = jsonObject.get("name").getAsString();
             String email = jsonObject.get("email").getAsString();
             String password = jsonObject.get("password").getAsString();
-            user = new User(name, email, password);
+            user = new User(id, name, email, password);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }finally {

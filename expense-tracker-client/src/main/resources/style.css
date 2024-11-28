@@ -1,8 +1,8 @@
 /* generic classes */
-Label, TextField, Button, PasswordField{
+/*Label, TextField, Button, PasswordField{
     -fx-border-width: 2px;
     -fx-border-color: #fff;
-}
+}*/
 
 Button{
     -fx-cursor: hand;
@@ -22,7 +22,7 @@ Button:hover{
 }
 
 .text-size-sm{
-
+    -fx-font-size: 12px;
 }
 
 .text-white{
@@ -37,7 +37,7 @@ Button:hover{
     -fx-font-weight: 700;
 }
 
-/* background */
+/* background colors */
 .bg-light-blue{
     -fx-background-color: #377BE1;
 }
