@@ -1,5 +1,6 @@
 package org.example.dialogs;
 
+import com.google.gson.JsonObject;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -8,14 +9,19 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
+import org.example.models.User;
 import org.example.utils.ApiHandler;
 
-import java.awt.*;
+import java.io.IOException;
 import java.net.HttpURLConnection;
 
 // Note: the way the dialog works is that it expects to return something but that is not necessary for us
 public class CreateNewCategoryDialog extends Dialog<String> {
-    public CreateNewCategoryDialog(){
+    private User user;
+
+    public CreateNewCategoryDialog(User user){
+        this.user = user;
+
         getDialogPane().getStylesheets().add(getClass().getResource(
                 "/style.css"
         ).toExternalForm());
@@ -62,9 +68,29 @@ public class CreateNewCategoryDialog extends Dialog<String> {
                 // we don't want. They are the last two characters so we substring them out before storing them into the database.
                 String hexColorValue = color.substring(0, color.length() - 2);
 
-                HttpURLConnection httpURLConnection = ApiHandler.fetchApiResponse(
-                        "/api/transaction-categories", ApiHandler.RequestMethod.POST, null
-                );
+                JsonObject transactionCategoryData = new JsonObject();
+                transactionCategoryData.addProperty("userId", user.getId());
+                transactionCategoryData.addProperty("categoryName", categoryName);
+                transactionCategoryData.addProperty("categoryColor", hexColorValue);
+
+                HttpURLConnection httpConn = null;
+
+                try{
+                    httpConn = ApiHandler.fetchApiResponse(
+                            "/api/transaction-categories", ApiHandler.RequestMethod.POST, transactionCategoryData
+                    );
+
+                    if(httpConn != null && httpConn.getResponseCode() != 200){
+                        System.out.println("Error: " + httpConn.getResponseCode());
+                        return;
+                    }
+
+                    // todo create an alert stating that creating the new category was successful
+                    System.out.println("Created New Category!");
+
+                }catch(IOException e){
+                    e.printStackTrace();
+                }
             }
         });
 

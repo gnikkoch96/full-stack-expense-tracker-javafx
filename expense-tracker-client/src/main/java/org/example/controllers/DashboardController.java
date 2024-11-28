@@ -20,6 +20,7 @@ public class DashboardController {
     }
 
     private void fetchUserData(){
+        System.out.println("Fetching User Data");
         // fetch user data
         HttpURLConnection httpConn = null;
         try {
@@ -28,6 +29,7 @@ public class DashboardController {
                     ApiHandler.RequestMethod.GET, null);
 
             if(httpConn != null && httpConn.getResponseCode() != 200){
+                System.out.println("Error: " + httpConn.getResponseCode());
                 return;
             }
 
@@ -49,5 +51,9 @@ public class DashboardController {
             if(httpConn != null)
                 httpConn.disconnect();
         }
+    }
+
+    public User getUser(){
+        return user;
     }
 }

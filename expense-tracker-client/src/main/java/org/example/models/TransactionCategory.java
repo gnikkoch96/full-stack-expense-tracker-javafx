@@ -2,13 +2,13 @@ package org.example.models;
 
 public class TransactionCategory {
     private int id;
-    private int userId;
+    private User user;
     private String categoryName;
     private String categoryColor;
 
-    public TransactionCategory(int id, int userId, String categoryName, String categoryColor) {
+    public TransactionCategory(int id, User user, String categoryName, String categoryColor) {
         this.id = id;
-        this.userId = userId;
+        this.user = user;
         this.categoryName = categoryName;
         this.categoryColor = categoryColor;
     }

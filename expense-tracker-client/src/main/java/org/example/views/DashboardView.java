@@ -17,6 +17,7 @@ public class DashboardView implements View{
     private Label currentBalanceLabel, currentBalance;
     private Label totalIncomeLabel, totalIncome;
     private Label totalExpenseLabel, totalExpense;
+    private DashboardController dashboardController;
 
     public DashboardView(String email){
         this.email = email;
@@ -28,6 +29,9 @@ public class DashboardView implements View{
         currentBalance = new Label("$0.00");
         totalIncome = new Label("$0.00");
         totalExpense = new Label("$0.00");
+
+        dashboardController = new DashboardController(this);
+        System.out.println("Constructor");
     }
 
     @Override
@@ -37,7 +41,7 @@ public class DashboardView implements View{
                 "/style.css"
         ).toExternalForm());
 
-        new DashboardController(this);
+
         ViewNavigator.switchViews(scene);
     }
 
@@ -69,7 +73,8 @@ public class DashboardView implements View{
         createCategoryMenuItem.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                new CreateNewCategoryDialog().showAndWait();
+                System.out.println(dashboardController.getUser());
+                new CreateNewCategoryDialog(dashboardController.getUser()).showAndWait();
             }
         });
 

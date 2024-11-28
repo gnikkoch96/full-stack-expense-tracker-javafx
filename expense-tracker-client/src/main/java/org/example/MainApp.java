@@ -16,6 +16,6 @@ public class MainApp extends Application {
 //        LoginView loginView = new LoginView();
 //        loginView.show();
 
-        new DashboardView("newemail@email.com").show();
+        new DashboardView("email@email.com").show();
     }
 }
