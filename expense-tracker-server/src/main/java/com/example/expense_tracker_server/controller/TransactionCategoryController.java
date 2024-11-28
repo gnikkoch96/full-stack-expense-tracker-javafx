@@ -20,12 +20,24 @@ public class TransactionCategoryController {
     @Autowired
     private TransactionCategoryService transactionCategoryService;
 
-    @PostMapping
-    public ResponseEntity<TransactionCategory> createTransactionCategory(@RequestParam int userId,
-                        @RequestParam String categoryName, @RequestParam String categoryColor){
-        logger.info("Create Transaction Category for: {" + categoryName + ", " + categoryColor + "}");
+//    @PostMapping
+//    public ResponseEntity<TransactionCategory> createTransactionCategory(@RequestParam int userId,
+//                        @RequestParam String categoryName, @RequestParam String categoryColor){
+//        logger.info("Create Transaction Category for: {" + categoryName + ", " + categoryColor + "}");
+//
+//        transactionCategoryService.createTransactionCategory(userId, categoryName, categoryColor);
+//        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+//    }
 
-        transactionCategoryService.createTransactionCategory(userId, categoryName, categoryColor);
+    @PostMapping
+    public ResponseEntity<TransactionCategory> createTransactionCategory(@RequestBody TransactionCategory transactionCategory){
+        logger.info("Create Transaction Category for: {" + transactionCategory.getCategoryName() + ", " +
+                transactionCategory.getCategoryColor() + "}");
+
+        transactionCategoryService.createTransactionCategory(transactionCategory.getUser().getId(),
+                                            transactionCategory.getCategoryName(), transactionCategory.getCategoryColor());
+
+        // todo return transaction category obj
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
