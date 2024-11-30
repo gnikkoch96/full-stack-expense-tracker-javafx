@@ -18,34 +18,16 @@ import java.net.HttpURLConnection;
 
 // Note: add validation
 // Note: the way the dialog works is that it expects to return something but that is not necessary for us
-public class CreateNewCategoryDialog extends Dialog<String> {
-    private User user;
-    private Alert infoAlert, errorAlert;
+public class CreateNewCategoryDialog extends CustomDialog {
     private TextField newCategoryTextField;
     private ColorPicker colorPicker;
     private Button createCategoryButton;
 
     public CreateNewCategoryDialog(User user){
-        this.user = user;
-        infoAlert = new Alert(Alert.AlertType.INFORMATION);
-        errorAlert = new Alert(Alert.AlertType.ERROR);
-
-        getDialogPane().getStylesheets().add(getClass().getResource(
-                "/style.css"
-        ).toExternalForm());
-        getDialogPane().getStyleClass().addAll("main-background");
+        super(user);
         setTitle("Create new Category");
-
         VBox dialogVBox = createDialogVBoxContent();
-
-        // Note: we need to add a buttontype to be able to close the dialog
-        getDialogPane().getButtonTypes().addAll(ButtonType.OK);
-        Button okButton = (Button) getDialogPane().lookupButton(ButtonType.OK);
-        okButton.setVisible(false);
-        okButton.setDisable(false);
-
         getDialogPane().setContent(dialogVBox);
-
     }
 
     private VBox createDialogVBoxContent(){

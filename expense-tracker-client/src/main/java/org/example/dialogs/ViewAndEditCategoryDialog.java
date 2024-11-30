@@ -1,4 +1,9 @@
 package org.example.dialogs;
 
-public class ViewAndEditCategoryDialog {
+import org.example.models.User;
+
+public class ViewAndEditCategoryDialog extends CustomDialog{
+    public ViewAndEditCategoryDialog(User user) {
+        super(user);
+    }
 }
