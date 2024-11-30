@@ -33,6 +33,7 @@ public class ApiHandler {
                 // allows us to send data to the connected api
                 conn.setDoOutput(true);
 
+                System.out.println(jsonData.toString());
                 // send JSON data to the server by writing it to the output stream (closes the stream automatically)
                 if(jsonData != null) {
                     try (OutputStream os = conn.getOutputStream()) {

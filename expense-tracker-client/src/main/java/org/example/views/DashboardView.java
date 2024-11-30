@@ -30,7 +30,6 @@ public class DashboardView implements View{
         totalIncome = new Label("$0.00");
         totalExpense = new Label("$0.00");
 
-        dashboardController = new DashboardController(this);
         System.out.println("Constructor");
     }
 
@@ -41,6 +40,7 @@ public class DashboardView implements View{
                 "/style.css"
         ).toExternalForm());
 
+        dashboardController = new DashboardController(this);
 
         ViewNavigator.switchViews(scene);
     }
