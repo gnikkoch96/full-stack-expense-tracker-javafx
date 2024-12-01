@@ -10,6 +10,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import org.example.components.CategoryComponent;
 import org.example.models.User;
 import org.example.utils.ApiHandler;
 
@@ -42,7 +43,7 @@ public class ViewAndEditCategoryDialog extends CustomDialog{
             JsonObject jsonObject = jsonElement.getAsJsonObject();
 
             // create the UI component to add to display the category
-            HBox categoryComponent = createCategoryComponent(
+            CategoryComponent categoryComponent = new CategoryComponent(
                     jsonObject.get("categoryName").getAsString(),
                     jsonObject.get("categoryColor").getAsString()
             );
@@ -51,28 +52,5 @@ public class ViewAndEditCategoryDialog extends CustomDialog{
         }
 
         return dialogVBox;
-    }
-
-    // we will use this to create a component for each category that we retrieve
-    private HBox createCategoryComponent(String categoryText, String hexColorCode){
-        HBox categoryComponent = new HBox(10);
-        categoryComponent.setAlignment(Pos.CENTER);
-        categoryComponent.getStyleClass().addAll("view-category-component-padding", "rounded-border");
-
-        Label categoryLabel = new Label(categoryText);
-        categoryLabel.getStyleClass().addAll("view-category-margin", "text-size-md");
-
-        ColorPicker colorPicker = new ColorPicker();
-
-        colorPicker.setValue(Color.valueOf(hexColorCode));
-
-        Button editButton = new Button("Edit");
-        editButton.getStyleClass().addAll("text-size-md");
-
-        Button deleteButton = new Button("Del");
-        deleteButton.getStyleClass().addAll("bg-light-red", "text-white", "text-size-md");
-
-        categoryComponent.getChildren().addAll(categoryLabel, colorPicker, editButton, deleteButton);
-        return categoryComponent;
     }
 }
