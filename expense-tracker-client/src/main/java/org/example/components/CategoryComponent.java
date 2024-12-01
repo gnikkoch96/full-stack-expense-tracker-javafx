@@ -1,11 +1,13 @@
 package org.example.components;
 
+import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
+
 
 // Note: similar to react components, we will create components like this for better organization
 // we will use this to create a component for each category that we retrieve
@@ -38,13 +40,12 @@ public class CategoryComponent extends HBox{
         // is hidden when edit button is shown
         saveButton = new Button("Save");
         saveButton.setVisible(false);
-        saveButton.setDisable(true);
-        saveButton.setMinWidth(0);
+        saveButton.setManaged(false); // Note: to fully remove the button from layout you need to do this or else it leaves space for the button
         saveButton.getStyleClass().addAll("text-size-sm");
 
         deleteButton = new Button("Del");
         deleteButton.getStyleClass().addAll("bg-light-red", "text-white", "text-size-sm");
 
-        getChildren().addAll(categoryLabel, colorPicker, editButton, deleteButton);
+        getChildren().addAll(categoryLabel, colorPicker, editButton, saveButton, deleteButton);
     }
 }
