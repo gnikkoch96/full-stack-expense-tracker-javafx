@@ -6,7 +6,6 @@ import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
-import javafx.scene.control.Dialog;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -87,7 +86,8 @@ public class CreateNewCategoryDialog extends CustomDialog {
 
         // Note: the reason why we removed two is because ColorPicker returns a hex that includes the alpha values which
         // we don't want. They are the last two characters so we substring them out before storing them into the database.
-        String hexColorValue = color.substring(0, color.length() - 2);
+        // we also don't want to include the first 2 characters which are the "0x"
+        String hexColorValue = color.substring(2, color.length() - 2);
 
         JsonObject transactionCategoryData = new JsonObject();
 

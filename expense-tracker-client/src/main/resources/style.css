@@ -1,8 +1,8 @@
 /* generic classes */
-/*Label, TextField, Button, PasswordField{
+Label, TextField, Button, PasswordField{
     -fx-border-width: 2px;
     -fx-border-color: #fff;
-}*/
+}
 
 Button{
     -fx-cursor: hand;
@@ -42,6 +42,9 @@ Button:hover{
     -fx-background-color: #377BE1;
 }
 
+.bg-light-red{
+    -fx-background-color: #e13742;
+}
 
 /* text decorations */
 .text-underline{
@@ -51,6 +54,7 @@ Button:hover{
 /* border */
 .rounded-border{
     -fx-border-radius: 10px;
+    -fx-background-radius: 10px;
 }
 
 /* custom classes */
@@ -78,4 +82,12 @@ Button:hover{
 /* specific classes */
 .dashboard-padding{
     -fx-padding: 33px 43px;
+}
+
+.view-category-component-padding{
+    -fx-padding: 10px;
+}
+
+.view-category-margin{
+    -fx-padding: 0 50px 0 0;
 }

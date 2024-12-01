@@ -9,6 +9,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import org.example.controllers.DashboardController;
 import org.example.dialogs.CreateNewCategoryDialog;
+import org.example.dialogs.ViewAndEditCategoryDialog;
 import org.example.utils.Config;
 import org.example.utils.ViewNavigator;
 
@@ -29,8 +30,6 @@ public class DashboardView implements View{
         currentBalance = new Label("$0.00");
         totalIncome = new Label("$0.00");
         totalExpense = new Label("$0.00");
-
-        System.out.println("Constructor");
     }
 
     @Override
@@ -69,16 +68,32 @@ public class DashboardView implements View{
     private MenuBar createMenuBar(){
         MenuBar menuBar = new MenuBar();
         Menu fileMenu = new Menu("File");
+
         MenuItem createCategoryMenuItem = new MenuItem("Create Category");
         createCategoryMenuItem.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                System.out.println(dashboardController.getUser());
                 new CreateNewCategoryDialog(dashboardController.getUser()).showAndWait();
             }
         });
 
-        fileMenu.getItems().addAll(createCategoryMenuItem);
+        MenuItem viewCategoriesMenuItem = new MenuItem("View Categories");
+        viewCategoriesMenuItem.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                new ViewAndEditCategoryDialog(dashboardController.getUser()).showAndWait();
+            }
+        });
+
+        MenuItem logoutMenuItem = new MenuItem("Logout");
+        logoutMenuItem.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                new LoginView().show();
+            }
+        });
+
+        fileMenu.getItems().addAll(createCategoryMenuItem, viewCategoriesMenuItem, logoutMenuItem);
         menuBar.getMenus().addAll(fileMenu);
         return menuBar;
     }
