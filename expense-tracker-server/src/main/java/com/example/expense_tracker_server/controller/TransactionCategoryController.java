@@ -3,9 +3,11 @@ package com.example.expense_tracker_server.controller;
 import com.example.expense_tracker_server.entity.TransactionCategory;
 import com.example.expense_tracker_server.repository.TransactionCategoryRepository;
 import com.example.expense_tracker_server.service.TransactionCategoryService;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -58,7 +60,7 @@ public class TransactionCategoryController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<TransactionCategory> updateTransactionCategory(@PathVariable int id,
+    public ResponseEntity<TransactionCategory> updateTransactionCategoryById(@PathVariable int id,
                                                                          @RequestParam String newCategoryName,
                                                                          @RequestParam String newCategoryColor){
         logger.info("Updating Transaction Category with Id: " + id);
@@ -67,5 +69,12 @@ public class TransactionCategoryController {
                 transactionCategoryService.updateTransactionCategoryById(id, newCategoryName, newCategoryColor);
 
         return ResponseEntity.status(HttpStatus.OK).body(updatedTransactionCategory);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<TransactionCategory> delTransactionCategoryById(@PathVariable int id){
+        logger.info("Deleting Transaction Category with Id: " + id);
+        transactionCategoryService.delTransactionCategoryById(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

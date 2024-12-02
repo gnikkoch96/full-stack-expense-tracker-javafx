@@ -66,6 +66,19 @@ public class TransactionCategoryService {
 
         return transactionCategoryRepository.save(newTransactionCategory);
     }
+
+    // delete
+    public void delTransactionCategoryById(int transactionCategoryId){
+        logger.info("Deleting TransactionCategory with Id: " + transactionCategoryId);
+
+        // find transaction category
+        Optional<TransactionCategory> transactionCategory = transactionCategoryRepository.findById(transactionCategoryId);
+
+        if(transactionCategory.isEmpty()) return;
+
+        transactionCategoryRepository.delete(transactionCategory.get());
+    }
+
 }
 
 
