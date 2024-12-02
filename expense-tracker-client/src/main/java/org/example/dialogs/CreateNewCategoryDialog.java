@@ -11,6 +11,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import org.example.models.User;
 import org.example.utils.ApiHandler;
+import org.example.utils.Util;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -82,12 +83,7 @@ public class CreateNewCategoryDialog extends CustomDialog {
 
     private JsonObject createCategoryJsonData() {
         String categoryName = newCategoryTextField.getText();
-        String color = colorPicker.getValue().toString();
-
-        // Note: the reason why we removed two is because ColorPicker returns a hex that includes the alpha values which
-        // we don't want. They are the last two characters so we substring them out before storing them into the database.
-        // we also don't want to include the first 2 characters which are the "0x"
-        String hexColorValue = color.substring(2, color.length() - 2);
+        String color = Util.getHexColorValue(colorPicker);
 
         JsonObject transactionCategoryData = new JsonObject();
 
@@ -96,7 +92,7 @@ public class CreateNewCategoryDialog extends CustomDialog {
 
         transactionCategoryData.add("user", userData);
         transactionCategoryData.addProperty("categoryName", categoryName);
-        transactionCategoryData.addProperty("categoryColor", hexColorValue);
+        transactionCategoryData.addProperty("categoryColor", color);
         return transactionCategoryData;
     }
 }

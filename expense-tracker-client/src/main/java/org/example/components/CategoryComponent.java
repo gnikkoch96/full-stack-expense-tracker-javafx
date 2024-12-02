@@ -9,6 +9,10 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import org.example.models.TransactionCategory;
+import org.example.utils.ApiHandler;
+import org.example.utils.Util;
+
+import java.net.HttpURLConnection;
 
 
 // Note: similar to react components, we will create components like this for better organization
@@ -65,7 +69,19 @@ public class CategoryComponent extends HBox{
                 isEditing = false;
                 handleToggle();
 
+                // retrieve data
+                String newCategoryName = categoryTextField.getText();
+                String newCategoryColor = Util.getHexColorValue(colorPicker);
+
                 // save to database
+                HttpURLConnection httpConn = ApiHandler.fetchApiResponse(
+                        "/api/transaction-categories/" + transactionCategory.getId() + "?newCategoryName=" + newCategoryName + "&newCategoryColor=" + newCategoryColor,
+                        ApiHandler.RequestMethod.PUT,
+                        null
+                );
+
+                String apiResults = ApiHandler.readApiResponse(httpConn);
+                System.out.println(apiResults);
             }
         });
 

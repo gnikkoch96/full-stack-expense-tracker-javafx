@@ -1,7 +1,6 @@
 package org.example.views;
 
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -9,7 +8,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import org.example.controllers.SignUpController;
-import org.example.utils.Config;
+import org.example.utils.Util;
 import org.example.utils.ViewNavigator;
 
 public class SignUpView implements View{
@@ -50,7 +49,7 @@ public class SignUpView implements View{
 //        }
 
         vBox.getChildren().addAll(expenseTrackerLabel, signupForm);
-        return new Scene(vBox, Config.APP_WIDTH, Config.APP_HEIGHT);
+        return new Scene(vBox, Util.APP_WIDTH, Util.APP_HEIGHT);
     }
 
     private VBox createSignUpForm(){

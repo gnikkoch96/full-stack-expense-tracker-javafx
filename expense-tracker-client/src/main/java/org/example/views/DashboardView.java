@@ -10,7 +10,7 @@ import javafx.scene.layout.VBox;
 import org.example.controllers.DashboardController;
 import org.example.dialogs.CreateNewCategoryDialog;
 import org.example.dialogs.ViewAndEditCategoryDialog;
-import org.example.utils.Config;
+import org.example.utils.Util;
 import org.example.utils.ViewNavigator;
 
 public class DashboardView implements View{
@@ -62,7 +62,7 @@ public class DashboardView implements View{
 
         vBoxContent.getChildren().addAll(balanceSummaryBox);
         vBox.getChildren().addAll(vBoxContent);
-        return new Scene(vBox, Config.APP_WIDTH, Config.APP_HEIGHT);
+        return new Scene(vBox, Util.APP_WIDTH, Util.APP_HEIGHT);
     }
 
     private MenuBar createMenuBar(){

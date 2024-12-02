@@ -8,7 +8,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import org.example.controllers.LoginController;
-import org.example.utils.Config;
+import org.example.utils.Util;
 import org.example.utils.ViewNavigator;
 
 public class LoginView implements View{
@@ -44,7 +44,7 @@ public class LoginView implements View{
     //        }
 
         vBox.getChildren().addAll(expenseTrackerLabel, loginForm);
-        return new Scene(vBox, Config.APP_WIDTH, Config.APP_HEIGHT);
+        return new Scene(vBox, Util.APP_WIDTH, Util.APP_HEIGHT);
     }
 
     private VBox createLoginForm(){
