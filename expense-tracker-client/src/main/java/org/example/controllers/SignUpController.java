@@ -86,6 +86,7 @@ public class SignUpController {
                     ApiHandler.RequestMethod.GET, null);
 
             if(httpConn != null && httpConn.getResponseCode() == 200){
+                System.out.println("Error:" + httpConn.getResponseCode());
                 return false;
             }
         } catch (IOException e) {
