@@ -56,4 +56,16 @@ public class TransactionCategoryController {
         List<TransactionCategory> transactionCategoryList = transactionCategoryService.getAllTransactionCategoriesByUserId(userId);
         return ResponseEntity.status(HttpStatus.OK).body(transactionCategoryList);
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<TransactionCategory> updateTransactionCategory(@PathVariable int id,
+                                                                         @RequestParam String newCategoryName,
+                                                                         @RequestParam String newCategoryColor){
+        logger.info("Updating Transaction Category with Id: " + id);
+
+        TransactionCategory updatedTransactionCategory =
+                transactionCategoryService.updateTransactionCategoryById(id, newCategoryName, newCategoryColor);
+
+        return ResponseEntity.status(HttpStatus.OK).body(updatedTransactionCategory);
+    }
 }

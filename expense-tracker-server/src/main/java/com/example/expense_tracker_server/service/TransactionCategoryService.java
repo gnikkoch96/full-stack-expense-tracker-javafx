@@ -48,6 +48,24 @@ public class TransactionCategoryService {
         logger.info("Getting all Transaction Categories for User: " + userId);
         return transactionCategoryRepository.findAllByUserId(userId);
     }
+
+    // update
+    public TransactionCategory updateTransactionCategoryById(int transactionCategoryId, String newCategoryName,
+                                                             String newCategoryColor){
+        logger.info("Updating TransactionCategory with Id: " + transactionCategoryId);
+
+        // find the transaction category
+        Optional<TransactionCategory> transactionCategory = transactionCategoryRepository.findById(transactionCategoryId);
+
+        if(transactionCategory.isEmpty()) return null;
+
+        TransactionCategory newTransactionCategory = transactionCategory.get();
+        newTransactionCategory.setUser(transactionCategory.get().getUser());
+        newTransactionCategory.setCategoryName(newCategoryName);
+        newTransactionCategory.setCategoryColor(newCategoryColor);
+
+        return transactionCategoryRepository.save(newTransactionCategory);
+    }
 }
 
 
