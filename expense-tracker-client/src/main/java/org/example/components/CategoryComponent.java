@@ -7,6 +7,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import org.example.models.TransactionCategory;
 
@@ -33,7 +35,7 @@ public class CategoryComponent extends HBox{
         getStyleClass().addAll("view-category-component-padding", "rounded-border", "field-background");
 
         categoryTextField = new TextField(transactionCategory.getCategoryName());
-        categoryTextField.setMaxWidth(200);
+        categoryTextField.setMinWidth(500);
         categoryTextField.setEditable(false);
         categoryTextField.getStyleClass().addAll("field-background", "text-size-md", "text-light-gray");
 
@@ -43,6 +45,7 @@ public class CategoryComponent extends HBox{
         colorPicker.getStyleClass().addAll("text-size-sm");
 
         editButton = new Button("Edit");
+        editButton.setMinWidth(50);
         editButton.getStyleClass().addAll("text-size-sm");
         editButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -55,6 +58,7 @@ public class CategoryComponent extends HBox{
         // is hidden when edit button is shown
         saveButton = new Button("Save");
         saveButton.setVisible(false);
+        saveButton.setMinWidth(50);
         saveButton.setManaged(false); // Note: to fully remove the button from layout you need to do this or else it leaves space for the button
         saveButton.getStyleClass().addAll("text-size-sm");
         saveButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -79,7 +83,7 @@ public class CategoryComponent extends HBox{
 
             // enable category text
             categoryTextField.setEditable(true);
-            categoryTextField.setStyle("-fx-background-color: #fff");
+            categoryTextField.setStyle("-fx-background-color: #fff; -fx-text-fill: #000");
 
             // enable color picker
             colorPicker.setDisable(false);
@@ -97,7 +101,7 @@ public class CategoryComponent extends HBox{
 
             // disable category text
             categoryTextField.setEditable(false);
-            categoryTextField.setStyle("-fx-background-color: #515050");
+            categoryTextField.setStyle("-fx-background-color: #515050; -fx-text-fill: #BEB9B9;");
 
             // disable color picker
             colorPicker.setDisable(true);

@@ -14,6 +14,9 @@ public class ViewAndEditCategoryDialog extends CustomDialog{
     public ViewAndEditCategoryDialog(User user) {
         super(user);
         setTitle("View Categories");
+        setWidth(800);
+        setHeight(500);
+
         VBox dialogContent = createDialogVBoxContent();
         getDialogPane().setContent(dialogContent);
     }
