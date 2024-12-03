@@ -12,6 +12,7 @@ import org.example.models.TransactionCategory;
 import org.example.utils.ApiHandler;
 import org.example.utils.Util;
 
+import java.io.IOException;
 import java.net.HttpURLConnection;
 
 
@@ -74,19 +75,57 @@ public class CategoryComponent extends HBox{
                 String newCategoryColor = Util.getHexColorValue(colorPicker);
 
                 // save to database
-                HttpURLConnection httpConn = ApiHandler.fetchApiResponse(
-                        "/api/transaction-categories/" + transactionCategory.getId() + "?newCategoryName=" + newCategoryName + "&newCategoryColor=" + newCategoryColor,
-                        ApiHandler.RequestMethod.PUT,
-                        null
-                );
+                HttpURLConnection httpConn = null;
+                try {
+                     httpConn = ApiHandler.fetchApiResponse(
+                            "/api/transaction-categories/" + transactionCategory.getId() + "?newCategoryName=" + newCategoryName + "&newCategoryColor=" + newCategoryColor,
+                            ApiHandler.RequestMethod.PUT,
+                            null
+                    );
 
-                String apiResults = ApiHandler.readApiResponse(httpConn);
-                System.out.println(apiResults);
+                    if(httpConn != null && httpConn.getResponseCode() != 200){
+                        System.out.println("Updating Error: " + httpConn.getResponseCode());
+                    }
+
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }finally {
+                    if(httpConn != null){
+                        httpConn.disconnect();
+                    }
+                }
             }
         });
 
         deleteButton = new Button("Del");
         deleteButton.getStyleClass().addAll("bg-light-red", "text-white", "text-size-sm");
+        deleteButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                // delete from database
+                HttpURLConnection httpConn = null;
+                try{
+                    httpConn = ApiHandler.fetchApiResponse(
+                            "/api/transaction-categories/" + transactionCategory.getId(),
+                            ApiHandler.RequestMethod.DELETE,
+                            null
+                    );
+
+                    if(httpConn != null && httpConn.getResponseCode() != 204){
+                        System.out.println("Deleting Error: " + httpConn.getResponseCode());
+                    }
+
+                }catch (IOException e){
+                    e.printStackTrace();
+                }finally {
+                    if(httpConn != null){
+                        httpConn.disconnect();
+                    }
+                }
+
+
+            }
+        });
 
         getChildren().addAll(categoryTextField, colorPicker, editButton, saveButton, deleteButton);
     }
