@@ -12,6 +12,12 @@ Button:hover{
     -fx-opacity: 0.5;
 }
 
+/* Note: to solve the issue with removing the default background color of the scrollpane */
+ScrollPane,
+ScrollPane > .viewport {
+   -fx-background-color: transparent;
+}
+
 /* text */
 .text-size-lg{
     -fx-font-size: 36px;

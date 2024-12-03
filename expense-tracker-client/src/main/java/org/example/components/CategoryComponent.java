@@ -7,6 +7,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import org.example.models.TransactionCategory;
 import org.example.utils.ApiHandler;
@@ -123,7 +124,13 @@ public class CategoryComponent extends HBox{
                     }
                 }
 
-
+                // remove component from UI
+                setVisible(false);
+                setManaged(false);
+                if(getParent() instanceof VBox){
+                    System.out.println("Removed Category Component");
+                    ((VBox) getParent()).getChildren().remove(CategoryComponent.this);
+                }
             }
         });
 
