@@ -28,7 +28,7 @@ public class ViewAndEditCategoryDialog extends CustomDialog{
         VBox dialogVBox = new VBox(20);
 
         ScrollPane scrollPane = new ScrollPane(dialogVBox);
-        scrollPane.setMinHeight(getHeight()); // makes scrollpane take the whole height of the dialog
+        scrollPane.setMinHeight(getHeight() - 40); // makes scrollpane take the whole height of the dialog, we subtract by 40 because the category component gets cut off
         scrollPane.setFitToWidth(true); // makes the VBox match the width of the ScrollPane
 
         // perform read on db for all the categories based on the user id
