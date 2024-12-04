@@ -49,7 +49,7 @@ public class UserController {
         String hashedPassword = passwordEncoder.encode(user.getPassword());
 
         User newUser = userService.createUser(user.getName(), user.getEmail(), hashedPassword);
-        return ResponseEntity.ok(newUser);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     // authenticate user
