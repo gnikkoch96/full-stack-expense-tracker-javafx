@@ -24,16 +24,7 @@ public class SignUpController {
             public void handle(MouseEvent mouseEvent) {
                 if(!validateInput()) return;
 
-                // retrieve user info to store into database
-                String name = signUpView.getNameField().getText();
-                String email = signUpView.getUsernameField().getText();
-                String password = signUpView.getPasswordField().getText();
-
-                JsonObject jsonData = new JsonObject();
-                jsonData.addProperty("name", name);
-                jsonData.addProperty("email", email);
-                jsonData.addProperty("password", password);
-
+                JsonObject jsonData = getJsonData();
                 HttpURLConnection httpConn = null;
                 try {
                     // call on the spring user api to create the user
@@ -41,7 +32,7 @@ public class SignUpController {
                                     ApiHandler.RequestMethod.POST, jsonData);
 
                     // failed to create user
-                    if(httpConn != null && httpConn.getResponseCode() != 200){
+                    if(httpConn != null && httpConn.getResponseCode() != 204){
                         System.out.println("Error: " + httpConn.getResponseCode());
                         return;
                     }
@@ -69,6 +60,20 @@ public class SignUpController {
                 new LoginView().show();
             }
         });
+    }
+
+    // retrieve user info to store into database
+    private JsonObject getJsonData() {
+        String name = signUpView.getNameField().getText();
+        String email = signUpView.getUsernameField().getText();
+        String password = signUpView.getPasswordField().getText();
+
+        // Note: the property names must match that of the fields in the entity class not the sql tables
+        JsonObject jsonData = new JsonObject();
+        jsonData.addProperty("name", name);
+        jsonData.addProperty("email", email);
+        jsonData.addProperty("password", password);
+        return jsonData;
     }
 
     // validates the user input

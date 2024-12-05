@@ -7,6 +7,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import org.example.models.TransactionCategory;
@@ -39,7 +40,9 @@ public class CategoryComponent extends HBox{
         getStyleClass().addAll("view-category-component-padding", "rounded-border", "field-background");
 
         categoryTextField = new TextField(transactionCategory.getCategoryName());
-        categoryTextField.setMinWidth(500);
+        HBox.setHgrow(categoryTextField, Priority.ALWAYS);
+        categoryTextField.setMaxWidth(Double.MAX_VALUE);
+
         categoryTextField.setEditable(false);
         categoryTextField.getStyleClass().addAll("field-background", "text-size-md", "text-light-gray");
 
