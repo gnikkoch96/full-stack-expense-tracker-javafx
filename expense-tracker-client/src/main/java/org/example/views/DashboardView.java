@@ -15,9 +15,15 @@ import org.example.utils.ViewNavigator;
 
 public class DashboardView implements View{
     private String email;
+
+    // menu
+    private MenuItem createCategoryMenuItem, viewCategoriesMenuItem, logoutMenuItem;
+
     private Label currentBalanceLabel, currentBalance;
     private Label totalIncomeLabel, totalIncome;
     private Label totalExpenseLabel, totalExpense;
+    private Button addTransactionButton;
+
     private DashboardController dashboardController;
 
     public DashboardView(String email){
@@ -25,6 +31,7 @@ public class DashboardView implements View{
         currentBalanceLabel = new Label("Current Balance:");
         totalIncomeLabel = new Label("Total Income:");
         totalExpenseLabel = new Label("Total Expense:");
+        addTransactionButton = new Button("+");
 
         // test todo remove
         currentBalance = new Label("$0.00");
@@ -59,8 +66,9 @@ public class DashboardView implements View{
         vBoxContent.setAlignment(Pos.TOP_CENTER);
 
         HBox balanceSummaryBox = createBalanceSummaryBox();
+        HBox mainDashboardContentBox = createContentBox();
 
-        vBoxContent.getChildren().addAll(balanceSummaryBox);
+        vBoxContent.getChildren().addAll(balanceSummaryBox, mainDashboardContentBox);
         vBox.getChildren().addAll(vBoxContent);
         return new Scene(vBox, Util.APP_WIDTH, Util.APP_HEIGHT);
     }
@@ -69,29 +77,9 @@ public class DashboardView implements View{
         MenuBar menuBar = new MenuBar();
         Menu fileMenu = new Menu("File");
 
-        MenuItem createCategoryMenuItem = new MenuItem("Create Category");
-        createCategoryMenuItem.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                new CreateNewCategoryDialog(dashboardController.getUser()).showAndWait();
-            }
-        });
-
-        MenuItem viewCategoriesMenuItem = new MenuItem("View Categories");
-        viewCategoriesMenuItem.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                new ViewAndEditCategoryDialog(dashboardController.getUser()).showAndWait();
-            }
-        });
-
-        MenuItem logoutMenuItem = new MenuItem("Logout");
-        logoutMenuItem.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                new LoginView().show();
-            }
-        });
+        createCategoryMenuItem = new MenuItem("Create Category");
+        viewCategoriesMenuItem = new MenuItem("View Categories");
+        logoutMenuItem = new MenuItem("Logout");
 
         fileMenu.getItems().addAll(createCategoryMenuItem, viewCategoriesMenuItem, logoutMenuItem);
         menuBar.getMenus().addAll(fileMenu);
@@ -123,6 +111,14 @@ public class DashboardView implements View{
         return balanceSummaryBox;
     }
 
+    private HBox createContentBox(){
+        HBox contentBox = new HBox();
+
+
+        contentBox.getChildren().addAll(addTransactionButton);
+        return contentBox;
+    }
+
     // getters and setters
     public String getEmail() {
         return email;
@@ -150,5 +146,37 @@ public class DashboardView implements View{
 
     public void setTotalExpense(Label totalExpense) {
         this.totalExpense = totalExpense;
+    }
+
+    public Button getAddTransactionButton() {
+        return addTransactionButton;
+    }
+
+    public void setAddTransactionButton(Button addTransactionButton) {
+        this.addTransactionButton = addTransactionButton;
+    }
+
+    public MenuItem getCreateCategoryMenuItem() {
+        return createCategoryMenuItem;
+    }
+
+    public void setCreateCategoryMenuItem(MenuItem createCategoryMenuItem) {
+        this.createCategoryMenuItem = createCategoryMenuItem;
+    }
+
+    public MenuItem getViewCategoriesMenuItem() {
+        return viewCategoriesMenuItem;
+    }
+
+    public void setViewCategoriesMenuItem(MenuItem viewCategoriesMenuItem) {
+        this.viewCategoriesMenuItem = viewCategoriesMenuItem;
+    }
+
+    public MenuItem getLogoutMenuItem() {
+        return logoutMenuItem;
+    }
+
+    public void setLogoutMenuItem(MenuItem logoutMenuItem) {
+        this.logoutMenuItem = logoutMenuItem;
     }
 }

@@ -3,9 +3,14 @@ package org.example.controllers;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import org.example.dialogs.CreateNewCategoryDialog;
+import org.example.dialogs.ViewAndEditCategoryDialog;
 import org.example.models.User;
 import org.example.utils.ApiHandler;
 import org.example.views.DashboardView;
+import org.example.views.LoginView;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -18,6 +23,9 @@ public class DashboardController {
     public DashboardController(DashboardView dashboardView){
         this.dashboardView = dashboardView;
         fetchUserData();
+
+        addMenuActions();
+        addContentActions();
     }
 
     private void fetchUserData(){
@@ -45,7 +53,7 @@ public class DashboardController {
             String email = jsonObject.get("email").getAsString();
             String password = jsonObject.get("password").getAsString();
 
-            // Note: since there is no built in method of getting a json object as a local date time we have to take some extra steps
+            // Note: since there is no built in method of getting a json object as a local date time obj we have to take some extra steps
             LocalDateTime createdAt = new Gson().fromJson(jsonObject.get("created_at"), LocalDateTime.class);
             user = new User(id, name, email, password, createdAt);
         } catch (IOException e) {
@@ -57,7 +65,35 @@ public class DashboardController {
         }
     }
 
-    public User getUser(){
-        return user;
+    private void addMenuActions(){
+        dashboardView.getCreateCategoryMenuItem().setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                new CreateNewCategoryDialog(user).showAndWait();
+            }
+        });
+
+        dashboardView.getViewCategoriesMenuItem().setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                new ViewAndEditCategoryDialog(user).showAndWait();
+            }
+        });
+
+        dashboardView.getLogoutMenuItem().setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                new LoginView().show();
+            }
+        });
+    }
+
+    private void addContentActions(){
+        dashboardView.getAddTransactionButton().setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                // launch create transaction dialog
+            }
+        });
     }
 }

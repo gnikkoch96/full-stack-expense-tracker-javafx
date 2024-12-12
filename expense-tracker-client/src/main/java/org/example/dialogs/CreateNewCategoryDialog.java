@@ -93,6 +93,9 @@ public class CreateNewCategoryDialog extends CustomDialog {
         transactionCategoryData.add("user", userData);
         transactionCategoryData.addProperty("categoryName", categoryName);
         transactionCategoryData.addProperty("categoryColor", color);
+
+        System.out.println(transactionCategoryData);
+
         return transactionCategoryData;
     }
 }
