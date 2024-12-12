@@ -6,6 +6,7 @@ import com.google.gson.JsonParser;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import org.example.dialogs.CreateNewCategoryDialog;
+import org.example.dialogs.CreateNewTransactionDialog;
 import org.example.dialogs.ViewAndEditCategoryDialog;
 import org.example.models.User;
 import org.example.utils.ApiHandler;
@@ -93,6 +94,7 @@ public class DashboardController {
             @Override
             public void handle(ActionEvent actionEvent) {
                 // launch create transaction dialog
+                new CreateNewTransactionDialog(user).showAndWait();
             }
         });
     }
