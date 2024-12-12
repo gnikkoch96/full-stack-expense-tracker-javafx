@@ -39,8 +39,16 @@ public class Transaction {
         return user;
     }
 
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     public TransactionCategory getTransactionCategory() {
         return transactionCategory;
+    }
+
+    public void setTransactionCategory(TransactionCategory transactionCategory) {
+        this.transactionCategory = transactionCategory;
     }
 
     public String getTransactionName() {

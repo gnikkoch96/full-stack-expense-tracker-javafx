@@ -34,12 +34,11 @@ public class TransactionCategoryController {
     @PostMapping
     public ResponseEntity<TransactionCategory> createTransactionCategory(@RequestBody TransactionCategory transactionCategory){
         logger.info("Create Transaction Category for: {" + transactionCategory.getCategoryName() + ", " +
-                transactionCategory.getCategoryColor() + "}");
+                transactionCategory.getCategoryColor() + "}" + "for user: " + transactionCategory.getUser().getId());
 
         transactionCategoryService.createTransactionCategory(transactionCategory.getUser().getId(),
                                             transactionCategory.getCategoryName(), transactionCategory.getCategoryColor());
 
-        // todo return transaction category obj
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
