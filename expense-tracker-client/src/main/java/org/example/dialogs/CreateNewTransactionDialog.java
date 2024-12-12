@@ -1,5 +1,7 @@
 package org.example.dialogs;
 
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
@@ -92,6 +94,12 @@ public class CreateNewTransactionDialog extends CustomDialog{
         cancelBtn = new Button("Cancel");
         cancelBtn.setPrefWidth(200);
         cancelBtn.getStyleClass().addAll("text-size-md", "rounded-border");
+        cancelBtn.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                CreateNewTransactionDialog.this.close();
+            }
+        });
 
         confirmCancelButtons.getChildren().addAll(saveBtn, cancelBtn);
         return confirmCancelButtons;
