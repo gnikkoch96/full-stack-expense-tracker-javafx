@@ -2,7 +2,7 @@ package com.example.expense_tracker_server.entity;
 
 import jakarta.persistence.*;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "transaction")
@@ -26,7 +26,7 @@ public class Transaction {
     private String transactionType;
 
     @Column(name = "transaction_date")
-    private LocalDateTime transactionDate;
+    private LocalDate transactionDate;
 
     @Column(name = "transaction_amount")
     private double transactionAmount;
@@ -67,11 +67,11 @@ public class Transaction {
         this.transactionType = transactionType;
     }
 
-    public LocalDateTime getTransactionDate() {
+    public LocalDate getTransactionDate() {
         return transactionDate;
     }
 
-    public void setTransactionDate(LocalDateTime transactionDate) {
+    public void setTransactionDate(LocalDate transactionDate) {
         this.transactionDate = transactionDate;
     }
 

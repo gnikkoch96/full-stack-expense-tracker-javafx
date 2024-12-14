@@ -22,22 +22,6 @@ public class TransactionCategoryService {
     private UserRepository userRepository;
 
     // create
-//    public TransactionCategory createTransactionCategory(int userId, String categoryName, String categoryColor){
-//        logger.info("Creating Transaction Category");
-//
-//        // find user by id
-//        Optional<User> user = userRepository.findById(userId);
-//
-//        if(user.isEmpty()) return null;
-//
-//        TransactionCategory transactionCategory = new TransactionCategory();
-//        transactionCategory.setUser(user.get());
-//        transactionCategory.setCategoryName(categoryName);
-//        transactionCategory.setCategoryColor(categoryColor);
-//
-//        return transactionCategoryRepository.save(transactionCategory);
-//    }
-
     public TransactionCategory createTransactionCategory(int userId, String categoryName, String categoryColor){
         logger.info("Creating Transaction Category");
 
