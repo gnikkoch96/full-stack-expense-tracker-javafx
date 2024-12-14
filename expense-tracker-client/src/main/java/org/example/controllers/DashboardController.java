@@ -29,6 +29,7 @@ public class DashboardController {
         addContentActions();
     }
 
+    // todo move this to sqlutil
     private void fetchUserData(){
         System.out.println("Fetching User Data");
         // fetch user data

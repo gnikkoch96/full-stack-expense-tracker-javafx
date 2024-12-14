@@ -114,7 +114,6 @@ public class DashboardView implements View{
     private HBox createContentBox(){
         HBox contentBox = new HBox();
 
-
         contentBox.getChildren().addAll(addTransactionButton);
         return contentBox;
     }

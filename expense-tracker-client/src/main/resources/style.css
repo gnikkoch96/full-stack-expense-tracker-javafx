@@ -8,6 +8,7 @@ Button{
     -fx-cursor: hand;
 }
 
+.combo-box .list-cell:hover,
 Button:hover{
     -fx-opacity: 0.5;
 }
