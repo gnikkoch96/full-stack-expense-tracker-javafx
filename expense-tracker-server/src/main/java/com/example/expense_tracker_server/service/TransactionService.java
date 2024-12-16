@@ -10,7 +10,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
 
@@ -30,7 +31,7 @@ public class TransactionService {
 
     // create
     public Transaction createTransaction(int categoryId, int userId, String transactionName,
-                                         double transactionAmount, LocalDateTime transactionDate, String transactionType){
+                                         double transactionAmount, LocalDate transactionDate, String transactionType){
         logger.info("Creating Transaction");
 
         // find category
@@ -63,6 +64,16 @@ public class TransactionService {
 
         logger.info(String.valueOf(transaction.getUser().getId()));
         return transactionRepository.save(transaction);
+    }
+
+    public List<Transaction> getAllTransactionsByUserId(int userId){
+        logger.info("Getting all Transaction for User: " + userId);
+        return transactionRepository.findAllByUserId(userId);
+    }
+
+    public Optional<Transaction> getTransactionById(int id){
+        logger.info("Getting all Transaction for User: " + id);
+        return transactionRepository.findById(id);
     }
 }
 
