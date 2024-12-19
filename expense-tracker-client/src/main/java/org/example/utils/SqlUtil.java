@@ -1,14 +1,12 @@
 package org.example.utils;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import org.example.models.TransactionCategory;
 import org.example.models.User;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,6 +55,41 @@ public class SqlUtil {
         return null;
     }
 
+    public static User getUserByEmail(String userEmail){
+        HttpURLConnection httpConn = null;
+        try {
+            // call on the spring user api to get user by email
+            httpConn = ApiHandler.fetchApiResponse("/api/users?email=" + userEmail,
+                    ApiHandler.RequestMethod.GET, null);
+
+            if(httpConn != null && httpConn.getResponseCode() != 200){
+                System.out.println("Error: " + httpConn.getResponseCode());
+                return null;
+            }
+
+            String userDataJson = ApiHandler.readApiResponse(httpConn);
+
+            // convert string to jsonobject
+            JsonObject jsonObject = JsonParser.parseString(userDataJson).getAsJsonObject();
+
+            // create user
+            int id = jsonObject.get("id").getAsInt();
+            String name = jsonObject.get("name").getAsString();
+            String email = jsonObject.get("email").getAsString();
+            String password = jsonObject.get("password").getAsString();
+
+            // Note: since there is no built in method of getting a json object as a local date time obj we have to take some extra steps
+            LocalDateTime createdAt = new Gson().fromJson(jsonObject.get("created_at"), LocalDateTime.class);
+            return new User(id, name, email, password, createdAt);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }finally {
+            // safely disconnect from the api
+            if(httpConn != null)
+                httpConn.disconnect();
+        }
+    }
+
     // POST requests
     public static boolean postTransaction(JsonObject jsonData){
         HttpURLConnection httpConn = null;
@@ -84,4 +117,6 @@ public class SqlUtil {
         // post failed
         return false;
     }
+
+
 }

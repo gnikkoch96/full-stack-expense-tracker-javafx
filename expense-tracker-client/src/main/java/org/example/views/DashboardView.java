@@ -1,15 +1,10 @@
 package org.example.views;
 
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import org.example.controllers.DashboardController;
-import org.example.dialogs.CreateNewCategoryDialog;
-import org.example.dialogs.ViewAndEditCategoryDialog;
 import org.example.utils.Util;
 import org.example.utils.ViewNavigator;
 
@@ -22,7 +17,10 @@ public class DashboardView implements View{
     private Label currentBalanceLabel, currentBalance;
     private Label totalIncomeLabel, totalIncome;
     private Label totalExpenseLabel, totalExpense;
+
+    private Label recentTransactionLabel;
     private Button addTransactionButton;
+    private VBox recentTransactionsBox;
 
     private DashboardController dashboardController;
 
@@ -31,9 +29,11 @@ public class DashboardView implements View{
         currentBalanceLabel = new Label("Current Balance:");
         totalIncomeLabel = new Label("Total Income:");
         totalExpenseLabel = new Label("Total Expense:");
+
+        recentTransactionLabel = new Label("Recent Transactions");
         addTransactionButton = new Button("+");
 
-        // test todo remove
+        // test todo remove when you can get this value via calculations
         currentBalance = new Label("$0.00");
         totalIncome = new Label("$0.00");
         totalExpense = new Label("$0.00");
@@ -64,11 +64,13 @@ public class DashboardView implements View{
         VBox vBoxContent = new VBox();
         vBoxContent.getStyleClass().addAll("dashboard-padding");
         vBoxContent.setAlignment(Pos.TOP_CENTER);
+        vBoxContent.setMinHeight(Util.APP_HEIGHT);
 
         HBox balanceSummaryBox = createBalanceSummaryBox();
-        HBox mainDashboardContentBox = createContentBox();
+        GridPane contentGridPane = createContentGridPane();
+        VBox.setVgrow(contentGridPane, Priority.ALWAYS); // expands grid vertically to fit the rest of the parent
 
-        vBoxContent.getChildren().addAll(balanceSummaryBox, mainDashboardContentBox);
+        vBoxContent.getChildren().addAll(balanceSummaryBox, contentGridPane);
         vBox.getChildren().addAll(vBoxContent);
         return new Scene(vBox, Util.APP_WIDTH, Util.APP_HEIGHT);
     }
@@ -111,11 +113,49 @@ public class DashboardView implements View{
         return balanceSummaryBox;
     }
 
-    private HBox createContentBox(){
-        HBox contentBox = new HBox();
+    private GridPane createContentGridPane(){
+        GridPane contentGridPane = new GridPane();
 
-        contentBox.getChildren().addAll(addTransactionButton);
-        return contentBox;
+        // set constraints to the cells in the gridpane
+        ColumnConstraints col1 = new ColumnConstraints();
+        col1.setPercentWidth(50);
+        ColumnConstraints col2 = new ColumnConstraints();
+        col2.setPercentWidth(50);
+        contentGridPane.getColumnConstraints().addAll(col1, col2);
+
+        VBox transactionContentBox = createTransactionContentBox();
+        GridPane.setVgrow(transactionContentBox, Priority.ALWAYS);
+
+        contentGridPane.add(transactionContentBox, 1, 0);
+
+        return contentGridPane;
+    }
+
+    private VBox createTransactionContentBox(){
+        VBox transactionContentBox = new VBox(20);
+
+        // label and button
+        // todo clean up
+        HBox transactionLabelAndButton = new HBox();
+        recentTransactionLabel.getStyleClass().addAll("text-size-lg", "text-light-gray");
+
+        // add spacing
+        Region spaceRegion = new Region();
+        HBox.setHgrow(spaceRegion, Priority.ALWAYS);
+
+        addTransactionButton.getStyleClass().addAll("field-background", "text-size-md", "text-light-gray", "rounded-border");
+        transactionLabelAndButton.getChildren().addAll(recentTransactionLabel, spaceRegion, addTransactionButton);
+
+        // recent transactions
+        recentTransactionsBox = new VBox();
+
+        ScrollPane recentTransactionScrollpane = new ScrollPane(recentTransactionsBox);
+        recentTransactionScrollpane.setFitToWidth(true);
+        recentTransactionScrollpane.setFitToHeight(true);
+        VBox.setVgrow(recentTransactionScrollpane, Priority.ALWAYS);
+
+        transactionContentBox.getChildren().addAll(transactionLabelAndButton, recentTransactionScrollpane);
+        return transactionContentBox;
     }
 
     // getters and setters
