@@ -64,7 +64,7 @@ public class DashboardView implements View{
         VBox vBoxContent = new VBox();
         vBoxContent.getStyleClass().addAll("dashboard-padding");
         vBoxContent.setAlignment(Pos.TOP_CENTER);
-        vBoxContent.setMinHeight(Util.APP_HEIGHT);
+        VBox.setVgrow(vBoxContent, Priority.ALWAYS);
 
         HBox balanceSummaryBox = createBalanceSummaryBox();
         GridPane contentGridPane = createContentGridPane();
@@ -148,10 +148,15 @@ public class DashboardView implements View{
 
         // recent transactions
         recentTransactionsBox = new VBox();
+        recentTransactionsBox.getStyleClass().addAll("field-background", "rounded-border");
+//        recentTransactionsBox.setMinHeight(Double.MAX_VALUE);
 
         ScrollPane recentTransactionScrollpane = new ScrollPane(recentTransactionsBox);
+
+        // TODO figure out what these do
         recentTransactionScrollpane.setFitToWidth(true);
         recentTransactionScrollpane.setFitToHeight(true);
+
         VBox.setVgrow(recentTransactionScrollpane, Priority.ALWAYS);
 
         transactionContentBox.getChildren().addAll(transactionLabelAndButton, recentTransactionScrollpane);
