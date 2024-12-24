@@ -1,24 +1,37 @@
 package org.example.models;
 
+import org.example.components.TransactionComponent;
+
 import java.time.LocalDate;
 
 public class Transaction {
     private int id;
+    private TransactionCategory transactionCategory;
     private String transactionName;
     private double transactionAmount;
     private LocalDate transactionDate;
     private String transactionType;
 
-    public Transaction(int id, String transactionName, double transactionAmount, LocalDate transactionDate, String transactionType) {
+    public Transaction(int id, TransactionCategory transactionCategory, String transactionName, double transactionAmount,
+                       LocalDate transactionDate, String transactionType) {
         this.id = id;
         this.transactionName = transactionName;
         this.transactionAmount = transactionAmount;
         this.transactionDate = transactionDate;
         this.transactionType = transactionType;
+        this.transactionCategory = transactionCategory;
     }
 
     public int getId() {
         return id;
+    }
+
+    public TransactionCategory getTransactionCategory() {
+        return transactionCategory;
+    }
+
+    public void setTransactionCategory(TransactionCategory transactionCategory) {
+        this.transactionCategory = transactionCategory;
     }
 
     public String getTransactionName() {

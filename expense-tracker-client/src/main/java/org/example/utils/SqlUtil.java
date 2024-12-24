@@ -1,11 +1,13 @@
 package org.example.utils;
 
 import com.google.gson.*;
+import org.example.models.Transaction;
 import org.example.models.TransactionCategory;
 import org.example.models.User;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -81,6 +83,55 @@ public class SqlUtil {
             // Note: since there is no built in method of getting a json object as a local date time obj we have to take some extra steps
             LocalDateTime createdAt = new Gson().fromJson(jsonObject.get("created_at"), LocalDateTime.class);
             return new User(id, name, email, password, createdAt);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }finally {
+            // safely disconnect from the api
+            if(httpConn != null)
+                httpConn.disconnect();
+        }
+    }
+
+    public static List<Transaction> getAllTransactionsByUserId(int userId){
+        List<Transaction> transactions = new ArrayList<>();
+
+        HttpURLConnection httpConn = null;
+        try {
+            // call on the spring user api to get user by email
+            httpConn = ApiHandler.fetchApiResponse("/api/transactions/user/" + userId,
+                    ApiHandler.RequestMethod.GET, null);
+
+            if(httpConn != null && httpConn.getResponseCode() != 200){
+                System.out.println("Error: " + httpConn.getResponseCode());
+                return null;
+            }
+
+            String results = ApiHandler.readApiResponse(httpConn);
+            JsonArray resultJson = new JsonParser().parse(results).getAsJsonArray();
+
+            for(int i = 0; i < resultJson.size(); i++){
+                JsonObject transactionObj = resultJson.get(i).getAsJsonObject();
+                int transactionId = transactionObj.get("id").getAsInt();
+
+                JsonObject transactionCategoryObject = transactionObj.get("transactionCategory").getAsJsonObject();
+                int transactionCategoryId = transactionCategoryObject.get("id").getAsInt();
+                String transactionCategoryName = transactionCategoryObject.get("categoryName").getAsString();
+                String transactionCategoryColor = transactionCategoryObject.get("categoryColor").getAsString();
+                TransactionCategory transactionCategory = new TransactionCategory(transactionCategoryId, transactionCategoryName,
+                        transactionCategoryColor);
+
+                String transactionName = transactionObj.get("transactionName").getAsString();
+                double transactionAmount = transactionObj.get("transactionAmount").getAsDouble();
+                LocalDate transactionDate = LocalDate.parse(transactionObj.get("transactionDate").getAsString());
+                String transactionType = transactionObj.get("transactionType").getAsString();
+
+                // create transaction obj
+                Transaction transaction = new Transaction(transactionId, transactionCategory, transactionName,
+                        transactionAmount, transactionDate, transactionType);
+                transactions.add(transaction);
+            }
+
+            return transactions;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }finally {

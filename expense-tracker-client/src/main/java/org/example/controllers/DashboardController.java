@@ -1,21 +1,22 @@
 package org.example.controllers;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import org.example.components.TransactionComponent;
 import org.example.dialogs.CreateNewCategoryDialog;
 import org.example.dialogs.CreateNewTransactionDialog;
 import org.example.dialogs.ViewAndEditCategoryDialog;
+import org.example.models.Transaction;
 import org.example.models.User;
 import org.example.utils.SqlUtil;
 import org.example.views.DashboardView;
 import org.example.views.LoginView;
+import java.util.List;
 
 public class DashboardController {
     private DashboardView dashboardView;
     private User user;
+    private List<Transaction> userTransactions;
 
     public DashboardController(DashboardView dashboardView){
         this.dashboardView = dashboardView;
@@ -29,6 +30,15 @@ public class DashboardController {
         System.out.println("Fetching User Data");
 
         user = SqlUtil.getUserByEmail(dashboardView.getEmail());
+
+        // retrieve transactions
+        userTransactions = SqlUtil.getAllTransactionsByUserId(user.getId());
+
+        for(Transaction transaction : userTransactions){
+            dashboardView.getRecentTransactionsBox().getChildren().add(
+                    new TransactionComponent(transaction)
+            );
+        }
     }
 
     private void addMenuActions(){
@@ -63,4 +73,8 @@ public class DashboardController {
             }
         });
     }
+
+//    private TransactionComponent createTransactionComponent(JsonElement jsonElement){
+//
+//    }
 }

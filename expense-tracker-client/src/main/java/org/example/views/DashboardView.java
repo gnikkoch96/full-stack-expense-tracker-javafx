@@ -132,7 +132,7 @@ public class DashboardView implements View{
     }
 
     private VBox createTransactionContentBox(){
-        VBox transactionContentBox = new VBox(20);
+        VBox transactionContentBox = new VBox();
 
         // label and button
         // todo clean up
@@ -147,13 +147,12 @@ public class DashboardView implements View{
         transactionLabelAndButton.getChildren().addAll(recentTransactionLabel, spaceRegion, addTransactionButton);
 
         // recent transactions
-        recentTransactionsBox = new VBox();
-        recentTransactionsBox.getStyleClass().addAll("field-background", "rounded-border");
-//        recentTransactionsBox.setMinHeight(Double.MAX_VALUE);
+        recentTransactionsBox = new VBox(10);
+        recentTransactionsBox.getStyleClass().addAll("field-background", "rounded-border", "padding-10px");
 
         ScrollPane recentTransactionScrollpane = new ScrollPane(recentTransactionsBox);
 
-        // TODO figure out what these do
+        // makes scroll pane take up the width and height of its parent
         recentTransactionScrollpane.setFitToWidth(true);
         recentTransactionScrollpane.setFitToHeight(true);
 
@@ -222,5 +221,13 @@ public class DashboardView implements View{
 
     public void setLogoutMenuItem(MenuItem logoutMenuItem) {
         this.logoutMenuItem = logoutMenuItem;
+    }
+
+    public VBox getRecentTransactionsBox() {
+        return recentTransactionsBox;
+    }
+
+    public void setRecentTransactionsBox(VBox recentTransactionsBox) {
+        this.recentTransactionsBox = recentTransactionsBox;
     }
 }

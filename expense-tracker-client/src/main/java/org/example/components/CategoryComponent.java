@@ -37,7 +37,7 @@ public class CategoryComponent extends HBox{
 
         setSpacing(10);
         setAlignment(Pos.CENTER_LEFT);
-        getStyleClass().addAll("view-category-component-padding", "rounded-border", "field-background");
+        getStyleClass().addAll("view-category-component-padding", "rounded-border", "field-background", "padding-10px");
 
         categoryTextField = new TextField(transactionCategory.getCategoryName());
         HBox.setHgrow(categoryTextField, Priority.ALWAYS);

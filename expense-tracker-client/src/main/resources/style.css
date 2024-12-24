@@ -52,6 +52,14 @@ ScrollPane > .viewport {
     -fx-text-fill: #fff;
 }
 
+.text-light-red{
+    -fx-text-fill: #ba2f2f;
+}
+
+.text-light-green{
+    -fx-text-fill: #33ba2f;
+}
+
 .text-light-gray{
     -fx-text-fill: #BEB9B9;
 }
@@ -72,6 +80,11 @@ ScrollPane > .viewport {
 /* text decorations */
 .text-underline{
     -fx-underline: true;
+}
+
+/* padding */
+.padding-10px{
+    -fx-padding: 10px;
 }
 
 /* border */
@@ -109,9 +122,6 @@ ScrollPane > .viewport {
     -fx-padding: 33px 43px;
 }
 
-.view-category-component-padding{
-    -fx-padding: 10px;
-}
 /* to change the color of the combo box */
 /* to change the color of the date picker */
 .combo-box .list-cell,
