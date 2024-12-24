@@ -68,7 +68,7 @@ public class TransactionService {
 
     public List<Transaction> getAllTransactionsByUserId(int userId){
         logger.info("Getting all Transaction for User: " + userId);
-        return transactionRepository.findAllByUserId(userId);
+        return transactionRepository.findAllByUserIdOrderByTransactionDateDesc(userId);
     }
 
     public Optional<Transaction> getTransactionById(int id){
