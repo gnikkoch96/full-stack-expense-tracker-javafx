@@ -66,6 +66,7 @@ public class TransactionService {
         return transactionRepository.save(transaction);
     }
 
+    // Note: it returns the list in descending order by default
     public List<Transaction> getAllTransactionsByUserId(int userId){
         logger.info("Getting all Transaction for User: " + userId);
         return transactionRepository.findAllByUserIdOrderByTransactionDateDesc(userId);
