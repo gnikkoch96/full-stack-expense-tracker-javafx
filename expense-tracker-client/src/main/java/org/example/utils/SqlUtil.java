@@ -113,12 +113,14 @@ public class SqlUtil {
                 JsonObject transactionObj = resultJson.get(i).getAsJsonObject();
                 int transactionId = transactionObj.get("id").getAsInt();
 
-                JsonObject transactionCategoryObject = transactionObj.get("transactionCategory").getAsJsonObject();
-                int transactionCategoryId = transactionCategoryObject.get("id").getAsInt();
-                String transactionCategoryName = transactionCategoryObject.get("categoryName").getAsString();
-                String transactionCategoryColor = transactionCategoryObject.get("categoryColor").getAsString();
-                TransactionCategory transactionCategory = new TransactionCategory(transactionCategoryId, transactionCategoryName,
-                        transactionCategoryColor);
+                TransactionCategory transactionCategory = null;
+                if (transactionObj.has("transactionCategory") && !transactionObj.get("transactionCategory").isJsonNull()) { // Check if the field exists and is not null
+                    JsonObject transactionCategoryObject = transactionObj.get("transactionCategory").getAsJsonObject();
+                    int transactionCategoryId = transactionCategoryObject.get("id").getAsInt();
+                    String transactionCategoryName = transactionCategoryObject.get("categoryName").getAsString();
+                    String transactionCategoryColor = transactionCategoryObject.get("categoryColor").getAsString();
+                    transactionCategory = new TransactionCategory(transactionCategoryId, transactionCategoryName, transactionCategoryColor);
+                }
 
                 String transactionName = transactionObj.get("transactionName").getAsString();
                 double transactionAmount = transactionObj.get("transactionAmount").getAsDouble();

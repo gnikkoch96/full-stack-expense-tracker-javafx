@@ -50,10 +50,16 @@ public class TransactionComponent extends HBox {
     private VBox createCatNameDateBox(){
         VBox catNameDateBox = new VBox();
 
-        transactionCategoryLabel = new Label(transaction.getTransactionCategory().getCategoryName());
+        if(transaction.getTransactionCategory() != null) {
+            transactionCategoryLabel = new Label(transaction.getTransactionCategory().getCategoryName());
 
-        // N: must add a # in front, for proper formatting
-        transactionCategoryLabel.setTextFill(Paint.valueOf("#" + transaction.getTransactionCategory().getCategoryColor()));
+            // N: must add a # in front, for proper formatting
+            transactionCategoryLabel.setTextFill(Paint.valueOf("#" + transaction.getTransactionCategory().getCategoryColor()));
+        }else {
+            transactionCategoryLabel = new Label("Undefined");
+            transactionCategoryLabel.getStyleClass().addAll("text-light-gray");
+        }
+
 
         transactionNameLabel = new Label(transaction.getTransactionName());
         transactionNameLabel.getStyleClass().addAll("text-light-gray", "text-size-md");

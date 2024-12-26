@@ -139,10 +139,14 @@ public class CreateNewTransactionDialog extends CustomDialog{
     private JsonObject createTransactionJsonData(){
         JsonObject transactionData = new JsonObject();
 
-        TransactionCategory category = getTransactionCategoryByString(transactionCategoryBox.getValue());
+        TransactionCategory category = getTransactionCategoryByName(transactionCategoryBox.getValue());
         JsonObject transactionCategoryData = new JsonObject();
-        transactionCategoryData.addProperty("id", category.getId());
-        transactionData.add("transactionCategory", transactionCategoryData);
+
+        if(category != null){
+            transactionCategoryData.addProperty("id", category.getId());
+            transactionData.add("transactionCategory", transactionCategoryData);
+        }
+
 
         JsonObject userData = new JsonObject();
         userData.addProperty("id", user.getId());
@@ -164,7 +168,7 @@ public class CreateNewTransactionDialog extends CustomDialog{
         return transactionData;
     }
 
-    private TransactionCategory getTransactionCategoryByString(String categoryName){
+    private TransactionCategory getTransactionCategoryByName(String categoryName){
         for(TransactionCategory transactionCategory : transactionCategories){
             if(transactionCategory.getCategoryName().equals(categoryName)){
                 return transactionCategory;
