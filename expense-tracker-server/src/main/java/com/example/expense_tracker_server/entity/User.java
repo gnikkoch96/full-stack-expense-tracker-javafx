@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 public class User {
     @Id // marks this variable as the unique id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // indicates that the database will handle the ID generation
-    private int id;
+    private Integer id;
 
     @Column(name="name")
     private String name;

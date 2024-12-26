@@ -29,41 +29,32 @@ public class TransactionService {
     @Autowired
     private UserRepository userRepository;
 
-    // create
-    public Transaction createTransaction(int categoryId, int userId, String transactionName,
-                                         double transactionAmount, LocalDate transactionDate, String transactionType){
+    // createit a
+    public Transaction createTransaction(Transaction transaction){
         logger.info("Creating Transaction");
 
-        // find category
-        Optional<TransactionCategory> transactionCategoryOptional = transactionCategoryRepository.findById(categoryId);
-
-        // find user
-        Optional<User> userOptional = userRepository.findById(userId);
-
-        logger.info("User is null");
-
-        // Note: we don't do this with the transactino category because it can be empty
-        if(userOptional.isEmpty()) return null;
-
-        logger.info("User is not null");
-
-        Transaction transaction = new Transaction();
-
-        if(transactionCategoryOptional.isEmpty()){
-            transaction.setTransactionCategory(null);
-        }else{
-            transaction.setTransactionCategory(transactionCategoryOptional.get());
+        // find category (optional)
+        TransactionCategory category = null;
+        if(transaction.getTransactionCategory() != null){
+            category = transactionCategoryRepository.findById(transaction.getTransactionCategory().getId())
+                    .orElse(null);
         }
 
-        logger.info(userOptional.get().getName());
-        transaction.setUser(userOptional.get());
-        transaction.setTransactionName(transactionName);
-        transaction.setTransactionAmount(transactionAmount);
-        transaction.setTransactionDate(transactionDate);
-        transaction.setTransactionType(transactionType);
+        // find user
+        User user = userRepository.findById(transaction.getUser().getId()).orElseThrow(
+                () -> new IllegalArgumentException("User Not Found")
+        );
 
-        logger.info(String.valueOf(transaction.getUser().getId()));
-        return transactionRepository.save(transaction);
+        // create new transaction
+        Transaction newTransaction = new Transaction();
+        newTransaction.setUser(user);
+        newTransaction.setTransactionName(transaction.getTransactionName());
+        newTransaction.setTransactionAmount(transaction.getTransactionAmount());
+        newTransaction.setTransactionDate(transaction.getTransactionDate());
+        newTransaction.setTransactionType(transaction.getTransactionType());
+        newTransaction.setTransactionCategory(category);
+
+        return transactionRepository.save(newTransaction);
     }
 
     // Note: it returns the list in descending order by default

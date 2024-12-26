@@ -22,25 +22,9 @@ public class TransactionController {
 
     @PostMapping
     public ResponseEntity<Transaction> createTransaction(@RequestBody Transaction transaction){
-        logger.info("Create Transaction: \n" +
-                transaction.getTransactionCategory().getId() + "\n" +
-                transaction.getUser().getId() + "\n" +
-                transaction.getTransactionName() + "\n" +
-                transaction.getTransactionAmount() + "\n" +
-                transaction.getTransactionDate() + "\n" +
-                transaction.getTransactionType()
-        );
+        logger.info("Creating Transaction");
 
-
-        transactionService.createTransaction(
-                transaction.getTransactionCategory().getId(),
-                transaction.getUser().getId(),
-                transaction.getTransactionName(),
-                transaction.getTransactionAmount(),
-                transaction.getTransactionDate(),
-                transaction.getTransactionType()
-        );
-
+        transactionService.createTransaction(transaction);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
