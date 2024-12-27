@@ -39,6 +39,25 @@ public class DashboardController {
                     new TransactionComponent(transaction)
             );
         }
+
+        // calculate the total income, total expense, and total balance
+        double totalIncome = 0;
+        double totalExpense = 0;
+
+        for(Transaction transaction : userTransactions){
+            if(transaction.getTransactionType().equalsIgnoreCase("income")){
+                totalIncome += transaction.getTransactionAmount();
+            }else{
+                totalExpense += transaction.getTransactionAmount();
+            }
+        }
+
+        double currentBalance = totalIncome - totalExpense;
+
+        // update view
+        dashboardView.getTotalExpense().setText("$" + totalExpense);
+        dashboardView.getTotalIncome().setText("$" + totalIncome);
+        dashboardView.getCurrentBalance().setText("$" + currentBalance);
     }
 
     private void addMenuActions(){

@@ -34,9 +34,9 @@ public class DashboardView implements View{
         addTransactionButton = new Button("+");
 
         // test todo remove when you can get this value via calculations
-        currentBalance = new Label("$0.00");
-        totalIncome = new Label("$0.00");
-        totalExpense = new Label("$0.00");
+        currentBalance = new Label();
+        totalIncome = new Label();
+        totalExpense = new Label();
     }
 
     @Override
@@ -61,7 +61,7 @@ public class DashboardView implements View{
         vBox.getChildren().addAll(menuBar);
 
         // main content (Note: this is to prevent the padding from affecting menu)
-        VBox vBoxContent = new VBox();
+        VBox vBoxContent = new VBox(20);
         vBoxContent.getStyleClass().addAll("dashboard-padding");
         vBoxContent.setAlignment(Pos.TOP_CENTER);
         VBox.setVgrow(vBoxContent, Priority.ALWAYS);
@@ -124,6 +124,7 @@ public class DashboardView implements View{
         contentGridPane.getColumnConstraints().addAll(col1, col2);
 
         VBox transactionContentBox = createTransactionContentBox();
+        transactionContentBox.getStyleClass().addAll("field-background", "rounded-border", "padding-10px");
         GridPane.setVgrow(transactionContentBox, Priority.ALWAYS);
 
         contentGridPane.add(transactionContentBox, 1, 0);
@@ -148,7 +149,7 @@ public class DashboardView implements View{
 
         // recent transactions
         recentTransactionsBox = new VBox(10);
-        recentTransactionsBox.getStyleClass().addAll("field-background", "rounded-border", "padding-10px");
+        recentTransactionsBox.getStyleClass().addAll();
 
         ScrollPane recentTransactionScrollpane = new ScrollPane(recentTransactionsBox);
 
