@@ -7,6 +7,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import org.example.controllers.DashboardController;
 import org.example.models.TransactionCategory;
 import org.example.models.User;
 import org.example.utils.SqlUtil;
@@ -16,6 +17,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class CreateNewTransactionDialog extends CustomDialog{
+    // used to access the fetchUserData() to refresh when a new transaction is added
+    private DashboardController dashboardController;
+
     private List<TransactionCategory> transactionCategories;
 
     private TextField transactionNameField, transactionAmountField;
@@ -24,8 +28,10 @@ public class CreateNewTransactionDialog extends CustomDialog{
     private ToggleGroup transactionTypeToggleGroup;
     private Button saveBtn, cancelBtn;
 
-    public CreateNewTransactionDialog(User user) {
+    public CreateNewTransactionDialog(User user, DashboardController dashboardController) {
         super(user);
+        this.dashboardController = dashboardController;
+
         setTitle("Create New Transaction");
         setWidth(700);
         setHeight(595);
@@ -108,14 +114,16 @@ public class CreateNewTransactionDialog extends CustomDialog{
                     if(postTransactionStatus){
                         infoAlert.setContentText("Success: Created a new Transaction!");
                         infoAlert.showAndWait();
+
+                        // reset the fields
+                        resetFields();
+
+                        // refresh dashboard
+                        dashboardController.fetchUserData();
                     }else{
                         errorAlert.setContentText("Error: Failed to create Transaction");
                         errorAlert.showAndWait();
                     }
-
-                    // reset the fields
-                    resetFields();
-
                 }catch(Exception e){
                     e.printStackTrace();
                 }

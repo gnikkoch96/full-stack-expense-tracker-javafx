@@ -89,7 +89,7 @@ public class DashboardView implements View{
     }
 
     private HBox createBalanceSummaryBox(){
-        HBox balanceSummaryBox = new HBox(400);
+        HBox balanceSummaryBox = new HBox();
 
         // current balance
         VBox currentBalanceBox = new VBox();
@@ -97,11 +97,17 @@ public class DashboardView implements View{
         currentBalance.getStyleClass().addAll("text-size-lg", "text-white");
         currentBalanceBox.getChildren().addAll(currentBalanceLabel,currentBalance);
 
+        Region region1 = new Region();
+        HBox.setHgrow(region1, Priority.ALWAYS);
+
         // total income
         VBox totalIncomeBox = new VBox();
         totalIncomeLabel.getStyleClass().addAll("text-size-lg", "text-light-gray");
         totalIncome.getStyleClass().addAll("text-size-lg", "text-white");
         totalIncomeBox.getChildren().addAll(totalIncomeLabel, totalIncome);
+
+        Region region2 = new Region();
+        HBox.setHgrow(region2, Priority.ALWAYS);
 
         // total expense
         VBox totalExpenseBox = new VBox();
@@ -109,7 +115,7 @@ public class DashboardView implements View{
         totalExpense.getStyleClass().addAll("text-size-lg", "text-white");
         totalExpenseBox.getChildren().addAll(totalExpenseLabel, totalExpense);
 
-        balanceSummaryBox.getChildren().addAll(currentBalanceBox, totalIncomeBox, totalExpenseBox);
+        balanceSummaryBox.getChildren().addAll(currentBalanceBox, region1, totalIncomeBox, region2, totalExpenseBox);
         return balanceSummaryBox;
     }
 
@@ -127,8 +133,9 @@ public class DashboardView implements View{
         transactionContentBox.getStyleClass().addAll("field-background", "rounded-border", "padding-10px");
         GridPane.setVgrow(transactionContentBox, Priority.ALWAYS);
 
-        contentGridPane.add(transactionContentBox, 1, 0);
+        // todo add table
 
+        contentGridPane.add(transactionContentBox, 1, 0);
         return contentGridPane;
     }
 

@@ -11,6 +11,9 @@ import org.example.models.User;
 import org.example.utils.SqlUtil;
 import org.example.views.DashboardView;
 import org.example.views.LoginView;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 public class DashboardController {
@@ -26,8 +29,9 @@ public class DashboardController {
         addContentActions();
     }
 
-    private void fetchUserData(){
+    public void fetchUserData(){
         System.out.println("Fetching User Data");
+        dashboardView.getRecentTransactionsBox().getChildren().clear();
 
         user = SqlUtil.getUserByEmail(dashboardView.getEmail());
 
@@ -41,18 +45,25 @@ public class DashboardController {
         }
 
         // calculate the total income, total expense, and total balance
-        double totalIncome = 0;
-        double totalExpense = 0;
+        // we use BigDecimal instead of double so that we can control how we round the numbers
+        BigDecimal totalIncome = BigDecimal.ZERO;
+        BigDecimal totalExpense = BigDecimal.ZERO;
 
         for(Transaction transaction : userTransactions){
+            BigDecimal transactionAmount = BigDecimal.valueOf(transaction.getTransactionAmount()); // Convert to BigDecimal
             if(transaction.getTransactionType().equalsIgnoreCase("income")){
-                totalIncome += transaction.getTransactionAmount();
+                totalIncome = totalIncome.add(transactionAmount);
             }else{
-                totalExpense += transaction.getTransactionAmount();
+                totalExpense = totalExpense.add(transactionAmount);
             }
         }
+        System.out.println(totalExpense);
+        BigDecimal currentBalance = totalIncome.subtract(totalExpense);
 
-        double currentBalance = totalIncome - totalExpense;
+        // Round to 2 decimal places
+        totalIncome = totalIncome.setScale(2, RoundingMode.HALF_UP);
+        totalExpense = totalExpense.setScale(2, RoundingMode.HALF_UP);
+        currentBalance = currentBalance.setScale(2, RoundingMode.HALF_UP);
 
         // update view
         dashboardView.getTotalExpense().setText("$" + totalExpense);
@@ -88,7 +99,7 @@ public class DashboardController {
             @Override
             public void handle(ActionEvent actionEvent) {
                 // launch create transaction dialog
-                new CreateNewTransactionDialog(user).showAndWait();
+                new CreateNewTransactionDialog(user, DashboardController.this).showAndWait();
             }
         });
     }
