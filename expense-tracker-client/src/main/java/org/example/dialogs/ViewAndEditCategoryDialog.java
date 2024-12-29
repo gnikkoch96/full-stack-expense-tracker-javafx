@@ -5,6 +5,7 @@ import com.google.gson.*;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
 import org.example.components.CategoryComponent;
+import org.example.controllers.DashboardController;
 import org.example.models.TransactionCategory;
 import org.example.models.User;
 import org.example.utils.ApiHandler;
@@ -14,8 +15,12 @@ import java.net.HttpURLConnection;
 
 
 public class ViewAndEditCategoryDialog extends CustomDialog{
-    public ViewAndEditCategoryDialog(User user) {
+    private DashboardController dashboardController;
+
+    public ViewAndEditCategoryDialog(User user, DashboardController dashboardController) {
         super(user);
+        this.dashboardController = dashboardController;
+
         setTitle("View Categories");
         setWidth(815);
         setHeight(500);
@@ -32,6 +37,7 @@ public class ViewAndEditCategoryDialog extends CustomDialog{
         scrollPane.setFitToWidth(true); // makes the VBox match the width of the ScrollPane
 
         // perform read on db for all the categories based on the user id
+        // todo put this into sqlutil
         HttpURLConnection httpConn = null;
         try{
             httpConn = ApiHandler.fetchApiResponse(
@@ -77,6 +83,7 @@ public class ViewAndEditCategoryDialog extends CustomDialog{
 
         // create the UI component to add to display the category
         CategoryComponent categoryComponent = new CategoryComponent(
+                dashboardController,
                 transactionCategory
         );
         return categoryComponent;

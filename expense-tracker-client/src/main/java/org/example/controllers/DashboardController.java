@@ -85,7 +85,7 @@ public class DashboardController {
         dashboardView.getViewCategoriesMenuItem().setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                new ViewAndEditCategoryDialog(user).showAndWait();
+                new ViewAndEditCategoryDialog(user, DashboardController.this).showAndWait();
             }
         });
 

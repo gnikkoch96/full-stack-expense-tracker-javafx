@@ -10,6 +10,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import org.example.controllers.DashboardController;
 import org.example.models.TransactionCategory;
 import org.example.utils.ApiHandler;
 import org.example.utils.Util;
@@ -21,6 +22,8 @@ import java.net.HttpURLConnection;
 // Note: similar to react components, we will create components like this for better organization
 // we will use this to create a component for each category that we retrieve
 public class CategoryComponent extends HBox{
+    private DashboardController dashboardController;
+
     private TransactionCategory transactionCategory;
 
     private TextField categoryTextField;
@@ -32,7 +35,9 @@ public class CategoryComponent extends HBox{
     // flags
     private boolean isEditing;
 
-    public CategoryComponent(TransactionCategory transactionCategory){
+    public CategoryComponent(DashboardController dashboardController
+                             ,TransactionCategory transactionCategory){
+        this.dashboardController = dashboardController;
         this.transactionCategory = transactionCategory;
 
         setSpacing(10);
@@ -134,6 +139,9 @@ public class CategoryComponent extends HBox{
                     System.out.println("Removed Category Component");
                     ((VBox) getParent()).getChildren().remove(CategoryComponent.this);
                 }
+
+                // refresh dashboard
+                dashboardController.fetchUserData();
             }
         });
 
