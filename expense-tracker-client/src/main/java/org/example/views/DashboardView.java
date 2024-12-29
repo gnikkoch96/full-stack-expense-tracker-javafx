@@ -34,9 +34,9 @@ public class DashboardView implements View{
         addTransactionButton = new Button("+");
 
         // test todo remove when you can get this value via calculations
-        currentBalance = new Label();
-        totalIncome = new Label();
-        totalExpense = new Label();
+        currentBalance = new Label("$0.00");
+        totalIncome = new Label("$0.00");
+        totalExpense = new Label("$0.00");
     }
 
     @Override

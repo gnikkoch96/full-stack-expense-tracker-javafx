@@ -38,6 +38,9 @@ public class DashboardController {
         // retrieve transactions
         userTransactions = SqlUtil.getAllTransactionsByUserId(user.getId());
 
+        // don't
+        if(userTransactions == null) return;
+
         for(Transaction transaction : userTransactions){
             dashboardView.getRecentTransactionsBox().getChildren().add(
                     new TransactionComponent(transaction)
