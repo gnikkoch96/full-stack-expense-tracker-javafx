@@ -84,8 +84,10 @@ public class CategoryComponent extends HBox{
                 String newCategoryColor = Util.getHexColorValue(colorPicker);
 
                 // save to database
+                // todo put in sqlutil
                 HttpURLConnection httpConn = null;
                 try {
+                    // different example
                      httpConn = ApiHandler.fetchApiResponse(
                             "/api/transaction-categories/" + transactionCategory.getId() + "?newCategoryName=" + newCategoryName + "&newCategoryColor=" + newCategoryColor,
                             ApiHandler.RequestMethod.PUT,

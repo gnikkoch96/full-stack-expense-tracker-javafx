@@ -141,48 +141,42 @@ public class CreateOrEditTransactionDialog extends CustomDialog{
         saveBtn.getStyleClass().addAll("bg-light-blue", "text-white", "text-size-md", "rounded-border");
 
         // depending on if the user creating or editing, it will perform different actions
-        if(isCreating){
-            // creating
-            saveBtn.setOnAction(new EventHandler<ActionEvent>() {
-                @Override
-                public void handle(ActionEvent actionEvent) {
-                    try{
-                        JsonObject jsonData = createTransactionJsonData();
+        saveBtn.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                try{
+                    JsonObject transactionJsonData = createTransactionJsonData();
 
-                        // call backend to store transaction to database
-                        boolean postTransactionStatus = SqlUtil.postTransaction(jsonData);
+                    // call backend to store transaction to database
+                    boolean transactionActionStatus;
 
-                        if(postTransactionStatus){
-                            infoAlert.setContentText("Success: Created a new Transaction!");
-                            infoAlert.showAndWait();
-
-                            // reset the fields
-                            resetFields();
-
-                            // refresh dashboard
-                            dashboardController.fetchUserData();
-                        }else{
-                            errorAlert.setContentText("Error: Failed to create Transaction");
-                            errorAlert.showAndWait();
-                        }
-                    }catch(Exception e){
-                        e.printStackTrace();
+                    // depending on flag we will either be creating or updating a transaction
+                    if(isCreating){
+                        transactionActionStatus = SqlUtil.postTransaction(transactionJsonData);
+                    }else{
+                        transactionActionStatus = SqlUtil.updateTransaction(transactionJsonData);
                     }
-                }
-            });
-        }else{
-            // editing
-            saveBtn.setOnAction(new EventHandler<ActionEvent>() {
-                @Override
-                public void handle(ActionEvent actionEvent) {
-                    try{
-                        // update database
-                    }catch(Exception e){
-                        e.printStackTrace();
+
+                    if(transactionActionStatus){
+                        infoAlert.setContentText(isCreating ? "Success: Created a new Transaction!"
+                                : "Success: Updated Transaction!");
+                        infoAlert.showAndWait();
+
+                        // reset the fields
+                        resetFields();
+
+                        // refresh dashboard
+                        dashboardController.fetchUserData();
+                    }else{
+                        errorAlert.setContentText(isCreating ? "Error: Failed to create Transaction"
+                                : "Error: Failed to Update Transaction");
+                        errorAlert.showAndWait();
                     }
+                }catch(Exception e){
+                    e.printStackTrace();
                 }
-            });
-        }
+            }
+        });
 
         Button cancelBtn = new Button("Cancel");
         cancelBtn.setPrefWidth(200);
@@ -200,6 +194,10 @@ public class CreateOrEditTransactionDialog extends CustomDialog{
 
     private JsonObject createTransactionJsonData(){
         JsonObject transactionData = new JsonObject();
+
+        if(!isCreating){
+            transactionData.addProperty("id", transaction.getId());
+        }
 
         TransactionCategory category = getTransactionCategoryByName(transactionCategoryBox.getValue());
         JsonObject transactionCategoryData = new JsonObject();

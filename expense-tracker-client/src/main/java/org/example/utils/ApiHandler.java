@@ -23,7 +23,7 @@ public class ApiHandler {
             // set request method to get
             conn.setRequestMethod(requestMethod.toString());
 
-            if(requestMethod == RequestMethod.POST){
+            if(jsonData != null && requestMethod != RequestMethod.GET){
                 // lets the api know that we will be sending in json data
                 conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
 
@@ -34,14 +34,12 @@ public class ApiHandler {
                 conn.setDoOutput(true);
 
                 // send JSON data to the server by writing it to the output stream (closes the stream automatically)
-                if(jsonData != null) {
-                    try (OutputStream os = conn.getOutputStream()) {
-                        // convert the JSON data to a byte array
-                        byte[] input = jsonData.toString().getBytes(StandardCharsets.UTF_8);
+                try (OutputStream os = conn.getOutputStream()) {
+                    // convert the JSON data to a byte array
+                    byte[] input = jsonData.toString().getBytes(StandardCharsets.UTF_8);
 
-                        // write the byte array to the output stream
-                        os.write(input, 0, input.length);
-                    }
+                    // write the byte array to the output stream
+                    os.write(input, 0, input.length);
                 }
             }
 

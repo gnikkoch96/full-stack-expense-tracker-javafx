@@ -144,17 +144,18 @@ public class SqlUtil {
     }
 
     // POST requests
-    public static boolean postTransaction(JsonObject jsonData){
+    public static boolean postTransaction(JsonObject transactionData){
         HttpURLConnection httpConn = null;
         try{
             httpConn = ApiHandler.fetchApiResponse(
                     "/api/transactions",
                     ApiHandler.RequestMethod.POST,
-                    jsonData
+                    transactionData
             );
 
             if(httpConn != null && httpConn.getResponseCode() != 204){
                 System.out.println("Getting Error: " + httpConn.getResponseCode());
+                return false;
             }
 
             // post successful
@@ -171,5 +172,33 @@ public class SqlUtil {
         return false;
     }
 
+    // PUT requests
+    public static boolean updateTransaction(JsonObject transactionData){
+        System.out.println(transactionData);
+        HttpURLConnection httpConn = null;
+        try{
+            httpConn = ApiHandler.fetchApiResponse(
+                    "/api/transactions",
+                    ApiHandler.RequestMethod.PUT,
+                    transactionData
+            );
+
+            if(httpConn != null && httpConn.getResponseCode() != 200){
+                System.out.println("Getting Error: " + httpConn.getResponseCode());
+                return false;
+            }
+
+            // update successful
+            return true;
+        }catch (IOException e){
+            e.printStackTrace();
+        }finally {
+            if(httpConn != null){
+                httpConn.disconnect();
+            }
+        }
+
+        return false;
+    }
 
 }
