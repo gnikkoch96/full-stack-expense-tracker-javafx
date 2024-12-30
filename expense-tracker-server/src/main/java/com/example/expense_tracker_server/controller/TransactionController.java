@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
@@ -48,6 +49,15 @@ public class TransactionController {
         if(transactionList.isEmpty()) return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 
         return ResponseEntity.status(HttpStatus.OK).body(transactionList);
+    }
+
+    @PutMapping
+    public ResponseEntity<Transaction> updateTransactionById(@RequestBody Transaction transaction){
+        logger.info("Updating Transaction with Id: " + transaction.getId());
+
+        Transaction updatedTransaction = transactionService.updateTransactionById(transaction);
+
+        return ResponseEntity.status(HttpStatus.OK).body(updatedTransaction);
     }
 }
 

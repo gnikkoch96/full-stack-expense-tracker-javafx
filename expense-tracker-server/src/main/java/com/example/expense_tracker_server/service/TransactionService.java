@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -29,7 +30,7 @@ public class TransactionService {
     @Autowired
     private UserRepository userRepository;
 
-    // createit a
+    // create
     public Transaction createTransaction(Transaction transaction){
         logger.info("Creating Transaction");
 
@@ -57,6 +58,7 @@ public class TransactionService {
         return transactionRepository.save(newTransaction);
     }
 
+    // read
     // Note: it returns the list in descending order by default
     public List<Transaction> getAllTransactionsByUserId(int userId){
         logger.info("Getting all Transaction for User: " + userId);
@@ -67,6 +69,28 @@ public class TransactionService {
         logger.info("Getting all Transaction for User: " + id);
         return transactionRepository.findById(id);
     }
+
+    // update
+    public Transaction updateTransactionById(Transaction transaction){
+        // can't update transaction if it doesn't exist
+        if(transaction == null) return null;
+
+        logger.info("Updating Transaction with ID: " + transaction.getId());
+
+        Transaction updatedTransaction = transaction;
+        updatedTransaction.setTransactionName(transaction.getTransactionName());
+        updatedTransaction.setTransactionAmount(transaction.getTransactionAmount());
+        updatedTransaction.setTransactionDate(transaction.getTransactionDate());
+        updatedTransaction.setTransactionType(transaction.getTransactionType());
+
+        // attempt to find transaction category if it doesn't exist just give it a null transaction category
+        Optional<TransactionCategory> transactionCategory = transactionCategoryRepository.findById(transaction.getTransactionCategory().getId());
+        updatedTransaction.setTransactionCategory(transactionCategory.orElse(null));
+
+        return transactionRepository.save(updatedTransaction);
+    }
+
+    // delete
 }
 
 
