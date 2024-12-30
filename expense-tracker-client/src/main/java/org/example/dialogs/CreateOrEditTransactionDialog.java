@@ -8,6 +8,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import org.example.controllers.DashboardController;
+import org.example.models.Transaction;
 import org.example.models.TransactionCategory;
 import org.example.models.User;
 import org.example.utils.SqlUtil;
@@ -16,7 +17,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-public class CreateNewTransactionDialog extends CustomDialog{
+public class CreateOrEditTransactionDialog extends CustomDialog{
     // used to access the fetchUserData() to refresh when a new transaction is added
     private DashboardController dashboardController;
 
@@ -26,23 +27,37 @@ public class CreateNewTransactionDialog extends CustomDialog{
     private DatePicker transactionDatePicker;
     private ComboBox<String> transactionCategoryBox;
     private ToggleGroup transactionTypeToggleGroup;
-    private Button saveBtn, cancelBtn;
 
-    public CreateNewTransactionDialog(User user, DashboardController dashboardController) {
-        super(user);
+    // this is used for editing the transaction.
+    private Transaction transaction;
+    private boolean isCreating;
+
+    // this has to go first so that transaction isn't null in the beginning
+    public CreateOrEditTransactionDialog(DashboardController dashboardController, Transaction transaction,
+                                         boolean isCreating) {
+        super(dashboardController.getUser());
+        System.out.println(transaction);
         this.dashboardController = dashboardController;
+        this.isCreating = isCreating;
+        this.transaction = transaction;
 
-        setTitle("Create New Transaction");
+        setTitle(isCreating ? "Create New Transaction" : "Edit Transaction");
         setWidth(700);
         setHeight(595);
 
-        transactionCategories = SqlUtil.getCategoriesByUser(user);
+        transactionCategories = SqlUtil.getCategoriesByUser(dashboardController.getUser());
 
         VBox contentBox = createContentBox();
         getDialogPane().setContent(contentBox);
     }
 
+    public CreateOrEditTransactionDialog(DashboardController dashboardController, boolean isCreating) {
+        // this will call on the other constructor as it's going to be pretty much the same here
+        this(dashboardController, null, isCreating);
+    }
+
     private VBox createContentBox(){
+        System.out.println(transaction);
         VBox contentBox = new VBox(30);
         contentBox.setAlignment(Pos.CENTER);
 
@@ -72,6 +87,19 @@ public class CreateNewTransactionDialog extends CustomDialog{
                     "rounded-border");
         transactionCategoryBox.setPrefWidth(Double.MAX_VALUE);
 
+        if(!isCreating){
+            // populate the fields with the transaction data
+            transactionNameField.setText(transaction.getTransactionName());
+            transactionAmountField.setText(String.valueOf(transaction.getTransactionAmount()));
+            transactionDatePicker.setValue(transaction.getTransactionDate());
+
+            // note: transaction category can be null
+            transactionCategoryBox.setValue(
+                    transaction.getTransactionCategory() != null ? transaction.getTransactionCategory().getCategoryName()
+                        : ""
+            );
+        }
+
         contentBox.getChildren().addAll(transactionNameField, transactionAmountField, transactionDatePicker,
                 transactionCategoryBox, createRadioButtons(), createConfirmCancelButtons());
 
@@ -92,6 +120,15 @@ public class CreateNewTransactionDialog extends CustomDialog{
         expenseRadioBtn.getStyleClass().addAll("text-size-md", "text-light-gray");
         radioButtons.getChildren().addAll(incomeRadioBtn, expenseRadioBtn);
 
+        if(!isCreating){
+            // select the corresponding type button
+            if (transaction.getTransactionType().equalsIgnoreCase("income")) {
+                incomeRadioBtn.setSelected(true);
+            } else {
+                expenseRadioBtn.setSelected(true);
+            }
+        }
+
         return radioButtons;
     }
 
@@ -99,44 +136,61 @@ public class CreateNewTransactionDialog extends CustomDialog{
         HBox confirmCancelButtons = new HBox(50);
         confirmCancelButtons.setAlignment(Pos.CENTER);
 
-        saveBtn = new Button("Save");
+        Button saveBtn = new Button("Save");
         saveBtn.setPrefWidth(200);
         saveBtn.getStyleClass().addAll("bg-light-blue", "text-white", "text-size-md", "rounded-border");
-        saveBtn.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                try{
-                    JsonObject jsonData = createTransactionJsonData();
 
-                    // call backend to store transaction to database
-                    boolean postTransactionStatus = SqlUtil.postTransaction(jsonData);
+        // depending on if the user creating or editing, it will perform different actions
+        if(isCreating){
+            // creating
+            saveBtn.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent actionEvent) {
+                    try{
+                        JsonObject jsonData = createTransactionJsonData();
 
-                    if(postTransactionStatus){
-                        infoAlert.setContentText("Success: Created a new Transaction!");
-                        infoAlert.showAndWait();
+                        // call backend to store transaction to database
+                        boolean postTransactionStatus = SqlUtil.postTransaction(jsonData);
 
-                        // reset the fields
-                        resetFields();
+                        if(postTransactionStatus){
+                            infoAlert.setContentText("Success: Created a new Transaction!");
+                            infoAlert.showAndWait();
 
-                        // refresh dashboard
-                        dashboardController.fetchUserData();
-                    }else{
-                        errorAlert.setContentText("Error: Failed to create Transaction");
-                        errorAlert.showAndWait();
+                            // reset the fields
+                            resetFields();
+
+                            // refresh dashboard
+                            dashboardController.fetchUserData();
+                        }else{
+                            errorAlert.setContentText("Error: Failed to create Transaction");
+                            errorAlert.showAndWait();
+                        }
+                    }catch(Exception e){
+                        e.printStackTrace();
                     }
-                }catch(Exception e){
-                    e.printStackTrace();
                 }
-            }
-        });
+            });
+        }else{
+            // editing
+            saveBtn.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent actionEvent) {
+                    try{
+                        // update database
+                    }catch(Exception e){
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
 
-        cancelBtn = new Button("Cancel");
+        Button cancelBtn = new Button("Cancel");
         cancelBtn.setPrefWidth(200);
         cancelBtn.getStyleClass().addAll("text-size-md", "rounded-border");
         cancelBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                CreateNewTransactionDialog.this.close();
+                CreateOrEditTransactionDialog.this.close();
             }
         });
 

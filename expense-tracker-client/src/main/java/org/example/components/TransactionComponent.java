@@ -1,5 +1,7 @@
 package org.example.components;
 
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -8,17 +10,19 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Paint;
+import org.example.controllers.DashboardController;
+import org.example.dialogs.CreateOrEditTransactionDialog;
 import org.example.models.Transaction;
-import org.example.models.TransactionCategory;
 
 public class TransactionComponent extends HBox {
     private Transaction transaction;
-    private TransactionCategory transactionCategory;
+    private DashboardController dashboardController;
 
     private Label transactionCategoryLabel, transactionNameLabel, transactionAmount, transactionDateLabel;
     private Button editBtn, delBtn;
 
-    public TransactionComponent(Transaction transaction){
+    public TransactionComponent(DashboardController dashboardController, Transaction transaction){
+        this.dashboardController = dashboardController;
         this.transaction = transaction;
 
         setSpacing(10);
@@ -77,6 +81,12 @@ public class TransactionComponent extends HBox {
 
         editBtn = new Button("Edit");
         editBtn.getStyleClass().addAll("text-size-md", "rounded-borders");
+        editBtn.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                new CreateOrEditTransactionDialog(dashboardController, transaction, false).showAndWait();
+            }
+        });
 
         delBtn = new Button("Del");
         delBtn.getStyleClass().addAll("text-size-md", "rounded-borders", "bg-light-red", "text-white");

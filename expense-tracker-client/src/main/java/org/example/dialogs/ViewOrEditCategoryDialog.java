@@ -14,10 +14,10 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 
 
-public class ViewAndEditCategoryDialog extends CustomDialog{
+public class ViewOrEditCategoryDialog extends CustomDialog{
     private DashboardController dashboardController;
 
-    public ViewAndEditCategoryDialog(User user, DashboardController dashboardController) {
+    public ViewOrEditCategoryDialog(User user, DashboardController dashboardController) {
         super(user);
         this.dashboardController = dashboardController;
 

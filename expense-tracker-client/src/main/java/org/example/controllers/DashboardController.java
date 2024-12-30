@@ -4,8 +4,8 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import org.example.components.TransactionComponent;
 import org.example.dialogs.CreateNewCategoryDialog;
-import org.example.dialogs.CreateNewTransactionDialog;
-import org.example.dialogs.ViewAndEditCategoryDialog;
+import org.example.dialogs.CreateOrEditTransactionDialog;
+import org.example.dialogs.ViewOrEditCategoryDialog;
 import org.example.models.Transaction;
 import org.example.models.User;
 import org.example.utils.SqlUtil;
@@ -43,7 +43,7 @@ public class DashboardController {
 
         for(Transaction transaction : userTransactions){
             dashboardView.getRecentTransactionsBox().getChildren().add(
-                    new TransactionComponent(transaction)
+                    new TransactionComponent(this, transaction)
             );
         }
 
@@ -85,7 +85,7 @@ public class DashboardController {
         dashboardView.getViewCategoriesMenuItem().setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                new ViewAndEditCategoryDialog(user, DashboardController.this).showAndWait();
+                new ViewOrEditCategoryDialog(user, DashboardController.this).showAndWait();
             }
         });
 
@@ -102,12 +102,12 @@ public class DashboardController {
             @Override
             public void handle(ActionEvent actionEvent) {
                 // launch create transaction dialog
-                new CreateNewTransactionDialog(user, DashboardController.this).showAndWait();
+                new CreateOrEditTransactionDialog(DashboardController.this, true).showAndWait();
             }
         });
     }
 
-//    private TransactionComponent createTransactionComponent(JsonElement jsonElement){
-//
-//    }
+    public User getUser(){
+        return user;
+    }
 }
