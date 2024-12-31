@@ -36,7 +36,6 @@ public class CreateOrEditTransactionDialog extends CustomDialog{
     public CreateOrEditTransactionDialog(DashboardController dashboardController, Transaction transaction,
                                          boolean isCreating) {
         super(dashboardController.getUser());
-        System.out.println(transaction);
         this.dashboardController = dashboardController;
         this.isCreating = isCreating;
         this.transaction = transaction;
@@ -57,7 +56,6 @@ public class CreateOrEditTransactionDialog extends CustomDialog{
     }
 
     private VBox createContentBox(){
-        System.out.println(transaction);
         VBox contentBox = new VBox(30);
         contentBox.setAlignment(Pos.CENTER);
 
@@ -243,6 +241,7 @@ public class CreateOrEditTransactionDialog extends CustomDialog{
         transactionNameField.setText("");
         transactionAmountField.setText("");
         transactionDatePicker.setValue(null);
+        transactionCategoryBox.setValue("Choose Category");
     }
 }
 

@@ -13,6 +13,7 @@ import javafx.scene.paint.Paint;
 import org.example.controllers.DashboardController;
 import org.example.dialogs.CreateOrEditTransactionDialog;
 import org.example.models.Transaction;
+import org.example.utils.SqlUtil;
 
 public class TransactionComponent extends HBox {
     private Transaction transaction;
@@ -90,6 +91,26 @@ public class TransactionComponent extends HBox {
 
         delBtn = new Button("Del");
         delBtn.getStyleClass().addAll("text-size-md", "rounded-borders", "bg-light-red", "text-white");
+        delBtn.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                // delete transaction in the database
+                boolean transactionDeleteStatus = SqlUtil.deleteTransactionById(transaction.getId());
+
+                // transaction deletion failed
+                if(!transactionDeleteStatus) return;
+
+                // remove component from UI
+                setVisible(false);
+                setManaged(false);
+                if(getParent() instanceof VBox){
+                    ((VBox) getParent()).getChildren().remove(TransactionComponent.this);
+                }
+
+                // refresh dashboard
+                dashboardController.fetchUserData();
+            }
+        });
 
         actionButtons.getChildren().addAll(editBtn, delBtn);
         return actionButtons;

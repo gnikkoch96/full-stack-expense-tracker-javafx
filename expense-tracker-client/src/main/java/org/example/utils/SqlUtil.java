@@ -174,7 +174,6 @@ public class SqlUtil {
 
     // PUT requests
     public static boolean updateTransaction(JsonObject transactionData){
-        System.out.println(transactionData);
         HttpURLConnection httpConn = null;
         try{
             httpConn = ApiHandler.fetchApiResponse(
@@ -201,4 +200,56 @@ public class SqlUtil {
         return false;
     }
 
+    // DELETE requests
+    public static boolean deleteTransactionCategoryById(int transactionCategoryId){
+        HttpURLConnection httpConn = null;
+        try{
+            httpConn = ApiHandler.fetchApiResponse(
+                    "/api/transaction-categories/" + transactionCategoryId,
+                    ApiHandler.RequestMethod.DELETE,
+                    null
+            );
+
+            if(httpConn != null && httpConn.getResponseCode() != 204){
+                System.out.println("Deleting Error: " + httpConn.getResponseCode());
+                return false;
+            }
+
+            return true;
+        }catch (IOException e){
+            e.printStackTrace();
+        }finally {
+            if(httpConn != null){
+                httpConn.disconnect();
+            }
+        }
+
+        return false;
+    }
+
+    public static boolean deleteTransactionById(int transactionId){
+        HttpURLConnection httpConn = null;
+        try{
+            httpConn = ApiHandler.fetchApiResponse(
+                    "/api/transactions/" + transactionId,
+                    ApiHandler.RequestMethod.DELETE,
+                    null
+            );
+
+            if(httpConn != null && httpConn.getResponseCode() != 204){
+                System.out.println("Getting Error: " + httpConn.getResponseCode());
+                return false;
+            }
+
+            return true;
+        }catch (IOException e){
+            e.printStackTrace();
+        }finally {
+            if(httpConn != null){
+                httpConn.disconnect();
+            }
+        }
+
+        return false;
+    }
 }

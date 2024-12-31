@@ -30,7 +30,6 @@ public class DashboardController {
     }
 
     public void fetchUserData(){
-        System.out.println("Fetching User Data");
         dashboardView.getRecentTransactionsBox().getChildren().clear();
 
         user = SqlUtil.getUserByEmail(dashboardView.getEmail());
@@ -60,7 +59,7 @@ public class DashboardController {
                 totalExpense = totalExpense.add(transactionAmount);
             }
         }
-        System.out.println(totalExpense);
+
         BigDecimal currentBalance = totalIncome.subtract(totalExpense);
 
         // Round to 2 decimal places

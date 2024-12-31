@@ -13,6 +13,7 @@ import javafx.scene.paint.Color;
 import org.example.controllers.DashboardController;
 import org.example.models.TransactionCategory;
 import org.example.utils.ApiHandler;
+import org.example.utils.SqlUtil;
 import org.example.utils.Util;
 
 import java.io.IOException;
@@ -114,31 +115,15 @@ public class CategoryComponent extends HBox{
             @Override
             public void handle(ActionEvent actionEvent) {
                 // delete from database
-                HttpURLConnection httpConn = null;
-                try{
-                    httpConn = ApiHandler.fetchApiResponse(
-                            "/api/transaction-categories/" + transactionCategory.getId(),
-                            ApiHandler.RequestMethod.DELETE,
-                            null
-                    );
+                boolean deletedTransactionCategoryStatus = SqlUtil.deleteTransactionCategoryById(transactionCategory.getId());
 
-                    if(httpConn != null && httpConn.getResponseCode() != 204){
-                        System.out.println("Deleting Error: " + httpConn.getResponseCode());
-                    }
-
-                }catch (IOException e){
-                    e.printStackTrace();
-                }finally {
-                    if(httpConn != null){
-                        httpConn.disconnect();
-                    }
-                }
+                // failed to delete transaction category
+                if(!deletedTransactionCategoryStatus) return;
 
                 // remove component from UI
                 setVisible(false);
                 setManaged(false);
                 if(getParent() instanceof VBox){
-                    System.out.println("Removed Category Component");
                     ((VBox) getParent()).getChildren().remove(CategoryComponent.this);
                 }
 
