@@ -10,7 +10,6 @@ import javafx.scene.layout.VBox;
 import org.example.controllers.DashboardController;
 import org.example.models.Transaction;
 import org.example.models.TransactionCategory;
-import org.example.models.User;
 import org.example.utils.SqlUtil;
 
 import java.time.LocalDate;

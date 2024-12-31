@@ -84,28 +84,8 @@ public class CategoryComponent extends HBox{
                 String newCategoryName = categoryTextField.getText();
                 String newCategoryColor = Util.getHexColorValue(colorPicker);
 
-                // save to database
-                // todo put in sqlutil
-                HttpURLConnection httpConn = null;
-                try {
-                    // different example
-                     httpConn = ApiHandler.fetchApiResponse(
-                            "/api/transaction-categories/" + transactionCategory.getId() + "?newCategoryName=" + newCategoryName + "&newCategoryColor=" + newCategoryColor,
-                            ApiHandler.RequestMethod.PUT,
-                            null
-                    );
-
-                    if(httpConn != null && httpConn.getResponseCode() != 200){
-                        System.out.println("Updating Error: " + httpConn.getResponseCode());
-                    }
-
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }finally {
-                    if(httpConn != null){
-                        httpConn.disconnect();
-                    }
-                }
+                // update database
+                SqlUtil.updateTransactionCategory(transactionCategory.getId(), newCategoryName, newCategoryColor);
             }
         });
 

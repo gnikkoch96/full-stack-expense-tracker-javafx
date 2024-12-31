@@ -173,6 +173,31 @@ public class SqlUtil {
     }
 
     // PUT requests
+    public static void updateTransactionCategory(int categoryId, String newCategoryName,
+                                                    String newCategoryColor){
+        HttpURLConnection httpConn = null;
+        try {
+            // different example
+            httpConn = ApiHandler.fetchApiResponse(
+                    "/api/transaction-categories/" + categoryId +
+                            "?newCategoryName=" + newCategoryName + "&newCategoryColor=" + newCategoryColor,
+                    ApiHandler.RequestMethod.PUT,
+                    null
+            );
+
+            if(httpConn != null && httpConn.getResponseCode() != 200){
+                System.out.println("Updating Error: " + httpConn.getResponseCode());
+            }
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }finally {
+            if(httpConn != null){
+                httpConn.disconnect();
+            }
+        }
+    }
+
     public static boolean updateTransaction(JsonObject transactionData){
         HttpURLConnection httpConn = null;
         try{
