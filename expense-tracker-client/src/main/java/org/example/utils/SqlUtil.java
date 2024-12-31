@@ -1,6 +1,7 @@
 package org.example.utils;
 
 import com.google.gson.*;
+import javafx.scene.paint.Color;
 import org.example.models.Transaction;
 import org.example.models.TransactionCategory;
 import org.example.models.User;
@@ -218,6 +219,25 @@ public class SqlUtil {
         }
 
         // post failed
+        return false;
+    }
+
+    public static boolean postTransactionCategory(JsonObject transactionCategoryData){
+        HttpURLConnection httpConn = null;
+        try{
+            httpConn = ApiHandler.fetchApiResponse(
+                    "/api/transaction-categories", ApiHandler.RequestMethod.POST, transactionCategoryData
+            );
+
+            if(httpConn != null && httpConn.getResponseCode() != 204){
+                return false;
+            }
+
+            return true;
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+
         return false;
     }
 

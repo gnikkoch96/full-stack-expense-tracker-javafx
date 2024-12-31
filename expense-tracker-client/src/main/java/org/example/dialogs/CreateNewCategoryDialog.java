@@ -11,6 +11,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import org.example.models.User;
 import org.example.utils.ApiHandler;
+import org.example.utils.SqlUtil;
 import org.example.utils.Util;
 
 import java.io.IOException;
@@ -52,27 +53,13 @@ public class CreateNewCategoryDialog extends CustomDialog {
                 // retrieve the values
                 JsonObject transactionCategoryData = createCategoryJsonData();
 
-                HttpURLConnection httpConn = null;
-                try{
-                    httpConn = ApiHandler.fetchApiResponse(
-                            "/api/transaction-categories", ApiHandler.RequestMethod.POST, transactionCategoryData
-                    );
+                boolean createTransactionCategoryStatus = SqlUtil.postTransactionCategory(transactionCategoryData);
 
-                    if(httpConn != null && httpConn.getResponseCode() != 204){
-                        System.out.println("Error: " + httpConn.getResponseCode());
-                        errorAlert.setContentText("There was an error creating your Category, please try again");
-                        errorAlert.showAndWait();
-                        return;
-                    }
-
-                    // reset the fields
-                    newCategoryTextField.setText("");
-                    colorPicker.setValue(Color.WHITE);
-
-                    infoAlert.setContentText("Successfully Created Category!");
-                    infoAlert.showAndWait();
-                }catch(IOException e){
-                    e.printStackTrace();
+                if(createTransactionCategoryStatus){
+                    Util.showAlertDialog(Alert.AlertType.INFORMATION, "Success: Category created successfully!");
+                    resetFields();
+                }else{
+                    Util.showAlertDialog(Alert.AlertType.ERROR,  "Error: Failed to create category");
                 }
             }
         });
@@ -97,5 +84,10 @@ public class CreateNewCategoryDialog extends CustomDialog {
         System.out.println(transactionCategoryData);
 
         return transactionCategoryData;
+    }
+
+    private void resetFields(){
+        newCategoryTextField.setText("");
+        colorPicker.setValue(Color.WHITE);
     }
 }
