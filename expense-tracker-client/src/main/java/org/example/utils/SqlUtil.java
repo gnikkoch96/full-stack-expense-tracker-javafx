@@ -4,6 +4,7 @@ import com.google.gson.*;
 import org.example.models.Transaction;
 import org.example.models.TransactionCategory;
 import org.example.models.User;
+import org.example.views.LoginView;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -144,6 +145,30 @@ public class SqlUtil {
     }
 
     // POST requests
+    public static boolean postUser(JsonObject userData){
+        HttpURLConnection httpConn = null;
+        try {
+            // call on the spring user api to create the user
+            httpConn = ApiHandler.fetchApiResponse("/api/users",
+                    ApiHandler.RequestMethod.POST, userData);
+
+            // failed to create user
+            if(httpConn != null && httpConn.getResponseCode() != 204){
+                System.out.println("Error: " + httpConn.getResponseCode());
+                return false;
+            }
+
+            // successfully created user
+            return true;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }finally {
+            // safely disconnect from the api
+            if(httpConn != null)
+                httpConn.disconnect();
+        }
+    }
+
     public static boolean postTransaction(JsonObject transactionData){
         HttpURLConnection httpConn = null;
         try{

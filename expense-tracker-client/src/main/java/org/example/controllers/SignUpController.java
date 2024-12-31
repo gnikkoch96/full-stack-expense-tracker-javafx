@@ -2,8 +2,10 @@ package org.example.controllers;
 
 import com.google.gson.JsonObject;
 import javafx.event.EventHandler;
+import javafx.scene.control.Alert;
 import javafx.scene.input.MouseEvent;
 import org.example.utils.ApiHandler;
+import org.example.utils.SqlUtil;
 import org.example.views.LoginView;
 import org.example.views.SignUpView;
 
@@ -25,30 +27,13 @@ public class SignUpController {
                 if(!validateInput()) return;
 
                 JsonObject jsonData = getJsonData();
-                HttpURLConnection httpConn = null;
-                try {
-                    // call on the spring user api to create the user
-                    httpConn = ApiHandler.fetchApiResponse("/api/users",
-                                    ApiHandler.RequestMethod.POST, jsonData);
 
-                    // failed to create user
-                    if(httpConn != null && httpConn.getResponseCode() != 204){
-                        System.out.println("Error: " + httpConn.getResponseCode());
-                        return;
-                    }
+                // create user to database
+                boolean createAccountStatus = SqlUtil.postUser(jsonData);
 
-                    // successfully created user
-                    // todo replace with dialog message and then take user back to login view
-                    System.out.println("Successfully Created User");
-                    new LoginView().show();
-
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }finally {
-                    // safely disconnect from the api
-                    if(httpConn != null)
-                        httpConn.disconnect();
-                }
+                Alert infoAlert = new Alert(Alert.AlertType.INFORMATION);
+                infoAlert.setContentText(createAccountStatus ? "Success: Account Created!" : "Error: Failed to Create Account...");
+                infoAlert.showAndWait();
             }
         });
 
