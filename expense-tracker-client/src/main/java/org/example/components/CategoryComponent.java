@@ -12,13 +12,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import org.example.controllers.DashboardController;
 import org.example.models.TransactionCategory;
-import org.example.utils.ApiHandler;
 import org.example.utils.SqlUtil;
 import org.example.utils.Util;
-
-import java.io.IOException;
-import java.net.HttpURLConnection;
-
 
 // Note: similar to react components, we will create components like this for better organization
 // we will use this to create a component for each category that we retrieve
@@ -86,6 +81,9 @@ public class CategoryComponent extends HBox{
 
                 // update database
                 SqlUtil.updateTransactionCategory(transactionCategory.getId(), newCategoryName, newCategoryColor);
+
+                // refresh dashboard
+                dashboardController.fetchUserData();
             }
         });
 

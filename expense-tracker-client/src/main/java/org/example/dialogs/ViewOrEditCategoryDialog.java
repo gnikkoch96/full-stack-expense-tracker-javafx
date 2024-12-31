@@ -8,10 +8,8 @@ import org.example.components.CategoryComponent;
 import org.example.controllers.DashboardController;
 import org.example.models.TransactionCategory;
 import org.example.models.User;
-import org.example.utils.ApiHandler;
-
-import java.io.IOException;
-import java.net.HttpURLConnection;
+import org.example.utils.SqlUtil;
+import java.util.List;
 
 
 public class ViewOrEditCategoryDialog extends CustomDialog{
@@ -37,55 +35,20 @@ public class ViewOrEditCategoryDialog extends CustomDialog{
         scrollPane.setFitToWidth(true); // makes the VBox match the width of the ScrollPane
 
         // perform read on db for all the categories based on the user id
-        // todo put this into sqlutil
-        HttpURLConnection httpConn = null;
-        try{
-            httpConn = ApiHandler.fetchApiResponse(
-                    "/api/transaction-categories/user/" + user.getId(),
-                    ApiHandler.RequestMethod.GET,
-                    null
-            );
-
-            if(httpConn != null && httpConn.getResponseCode() != 200){
-                System.out.println("Getting Error: " + httpConn.getResponseCode());
-            }
-
-            // retrieve json response
-            String results = ApiHandler.readApiResponse(httpConn);
-            JsonArray resultJson = new JsonParser().parse(results).getAsJsonArray();
-
-            // create category ui component for each record returned
-            for(int i = 0; i < resultJson.size(); i++){
-                JsonElement jsonElement = resultJson.get(i);
-                CategoryComponent categoryComponent = createCategoryComponent(jsonElement);
-                dialogVBox.getChildren().add(categoryComponent);
-            }
-
-        }catch (IOException e){
-            e.printStackTrace();
-        }finally {
-            if(httpConn != null){
-                httpConn.disconnect();
-            }
+        List<TransactionCategory> transactionCategories = SqlUtil.getCategoriesByUser(user);
+        for(TransactionCategory transactionCategory : transactionCategories){
+            CategoryComponent categoryComponent = createCategoryComponent(transactionCategory);
+            dialogVBox.getChildren().add(categoryComponent);
         }
 
         return scrollPane;
     }
 
-    private CategoryComponent createCategoryComponent(JsonElement jsonElement) {
-        JsonObject jsonObject = jsonElement.getAsJsonObject();
-
-        TransactionCategory transactionCategory = new TransactionCategory(
-                jsonObject.get("id").getAsInt(),
-                jsonObject.get("categoryName").getAsString(),
-                jsonObject.get("categoryColor").getAsString()
-        );
-
+    private CategoryComponent createCategoryComponent(TransactionCategory transactionCategory) {
         // create the UI component to add to display the category
-        CategoryComponent categoryComponent = new CategoryComponent(
+        return new CategoryComponent(
                 dashboardController,
                 transactionCategory
         );
-        return categoryComponent;
     }
 }
