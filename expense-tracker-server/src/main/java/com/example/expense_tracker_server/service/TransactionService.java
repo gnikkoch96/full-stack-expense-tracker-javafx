@@ -91,6 +91,15 @@ public class TransactionService {
     }
 
     // delete
+    public void deleteTransactionById(int transactionId){
+        logger.info("Deleting Transaction with ID: " + transactionId);
+
+        Optional<Transaction> transaction = transactionRepository.findById(transactionId);
+
+        if(transaction.isEmpty()) return;
+
+        transactionRepository.delete(transaction.get());
+    }
 }
 
 

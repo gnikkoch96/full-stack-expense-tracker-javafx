@@ -59,6 +59,13 @@ public class TransactionController {
 
         return ResponseEntity.status(HttpStatus.OK).body(updatedTransaction);
     }
+
+    @DeleteMapping("/{transactionId}")
+    public ResponseEntity<Transaction> deleteTransactionById(@PathVariable int transactionId){
+        logger.info("Deleting Transaction with Id: " + transactionId);
+        transactionService.deleteTransactionById(transactionId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 }
 
 
