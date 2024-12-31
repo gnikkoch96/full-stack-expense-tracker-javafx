@@ -1,15 +1,12 @@
 package org.example.controllers;
 
 import javafx.event.EventHandler;
+import javafx.scene.control.Alert;
 import javafx.scene.input.MouseEvent;
-import org.example.utils.ApiHandler;
-import org.example.utils.ViewNavigator;
+import org.example.utils.SqlUtil;
 import org.example.views.DashboardView;
 import org.example.views.LoginView;
 import org.example.views.SignUpView;
-
-import java.io.IOException;
-import java.net.HttpURLConnection;
 
 public class LoginController {
     private LoginView loginView;
@@ -30,29 +27,20 @@ public class LoginController {
                 String password = loginView.getPasswordField().getText();
 
                 // validate login
-                HttpURLConnection httpConn = null;
-                try {
-                    // call on the spring user api to get user by email
-                    httpConn = ApiHandler.fetchApiResponse(
-                            "/api/users/login?email=" + email + "&password=" + password,
-                            ApiHandler.RequestMethod.POST, null);
+                String results = SqlUtil.loginUser(email, password);
 
-                    // failed to login
-                    if(httpConn != null && httpConn.getResponseCode() != 200){
-                        return;
-                    }
-
-                    // login success, switch to dashboard view
-                    String apiResults = ApiHandler.readApiResponse(httpConn);
-                    new DashboardView(apiResults).show();
-
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }finally {
-                    // safely disconnect from the api
-                    if(httpConn != null)
-                        httpConn.disconnect();
+                Alert alert;
+                if(results == null){
+                    // login failed
+                    alert = new Alert(Alert.AlertType.ERROR);
+                }else{
+                    // login successful (switch to dashboard)
+                    alert = new Alert(Alert.AlertType.INFORMATION);
+                    new DashboardView(results).show();
                 }
+
+                alert.setContentText(results == null ? "Error: Invalid Credentials" : "Success: Login Successfully!");
+                alert.showAndWait();
             }
         });
 

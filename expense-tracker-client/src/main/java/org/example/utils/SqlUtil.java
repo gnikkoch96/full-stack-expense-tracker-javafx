@@ -4,7 +4,6 @@ import com.google.gson.*;
 import org.example.models.Transaction;
 import org.example.models.TransactionCategory;
 import org.example.models.User;
-import org.example.views.LoginView;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -145,6 +144,31 @@ public class SqlUtil {
     }
 
     // POST requests
+    public static String loginUser(String email, String password){
+        HttpURLConnection httpConn = null;
+        try {
+            // call on the spring user api to get user by email
+            httpConn = ApiHandler.fetchApiResponse(
+                    "/api/users/login?email=" + email + "&password=" + password,
+                    ApiHandler.RequestMethod.POST, null);
+
+            // failed to login
+            if(httpConn != null && httpConn.getResponseCode() != 200){
+                return null;
+            }
+
+            // login success, switch to dashboard view
+            String apiResults = ApiHandler.readApiResponse(httpConn);
+            return apiResults;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }finally {
+            // safely disconnect from the api
+            if(httpConn != null)
+                httpConn.disconnect();
+        }
+    }
+
     public static boolean postUser(JsonObject userData){
         HttpURLConnection httpConn = null;
         try {

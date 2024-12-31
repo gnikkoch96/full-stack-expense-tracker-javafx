@@ -31,9 +31,18 @@ public class SignUpController {
                 // create user to database
                 boolean createAccountStatus = SqlUtil.postUser(jsonData);
 
-                Alert infoAlert = new Alert(Alert.AlertType.INFORMATION);
-                infoAlert.setContentText(createAccountStatus ? "Success: Account Created!" : "Error: Failed to Create Account...");
-                infoAlert.showAndWait();
+                Alert alert;
+                if(createAccountStatus){
+                    alert = new Alert(Alert.AlertType.INFORMATION);
+                }else{
+                    alert = new Alert(Alert.AlertType.ERROR);
+                }
+
+                alert.setContentText(createAccountStatus ? "Success: Account Created!" : "Error: Failed to Create Account...");
+                alert.showAndWait();
+
+                // switch view to login view
+                new LoginView().show();
             }
         });
 
