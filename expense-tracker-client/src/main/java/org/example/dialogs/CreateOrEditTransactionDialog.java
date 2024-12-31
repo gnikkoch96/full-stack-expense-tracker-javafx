@@ -11,6 +11,7 @@ import org.example.controllers.DashboardController;
 import org.example.models.Transaction;
 import org.example.models.TransactionCategory;
 import org.example.utils.SqlUtil;
+import org.example.utils.Util;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -155,9 +156,11 @@ public class CreateOrEditTransactionDialog extends CustomDialog{
                     }
 
                     if(transactionActionStatus){
-                        infoAlert.setContentText(isCreating ? "Success: Created a new Transaction!"
-                                : "Success: Updated Transaction!");
-                        infoAlert.showAndWait();
+                        Util.showAlertDialog(
+                                Alert.AlertType.INFORMATION,
+                                isCreating ? "Success: Created a new Transaction!"
+                                        : "Success: Updated Transaction!"
+                        );
 
                         // reset the fields
                         resetFields();
@@ -165,9 +168,11 @@ public class CreateOrEditTransactionDialog extends CustomDialog{
                         // refresh dashboard
                         dashboardController.fetchUserData();
                     }else{
-                        errorAlert.setContentText(isCreating ? "Error: Failed to create Transaction"
-                                : "Error: Failed to Update Transaction");
-                        errorAlert.showAndWait();
+                        Util.showAlertDialog(
+                                Alert.AlertType.ERROR,
+                                isCreating ? "Error: Failed to create Transaction"
+                                        : "Error: Failed to Update Transaction"
+                        );
                     }
                 }catch(Exception e){
                     e.printStackTrace();

@@ -1,7 +1,5 @@
 package org.example.dialogs;
 
-import com.google.gson.*;
-
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
 import org.example.components.CategoryComponent;

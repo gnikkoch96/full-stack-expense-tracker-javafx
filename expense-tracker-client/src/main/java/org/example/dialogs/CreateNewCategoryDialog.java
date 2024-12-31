@@ -10,12 +10,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import org.example.models.User;
-import org.example.utils.ApiHandler;
 import org.example.utils.SqlUtil;
 import org.example.utils.Util;
-
-import java.io.IOException;
-import java.net.HttpURLConnection;
 
 // Note: add validation
 // Note: the way the dialog works is that it expects to return something but that is not necessary for us

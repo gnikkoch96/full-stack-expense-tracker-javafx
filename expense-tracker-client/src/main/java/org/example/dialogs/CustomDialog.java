@@ -1,6 +1,5 @@
 package org.example.dialogs;
 
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
@@ -10,12 +9,9 @@ import org.example.models.User;
 // we are going to put all the code that is common to all of our dialogs here to prevent repeating ourselves
 public class CustomDialog extends Dialog<String> {
     protected User user;
-    protected Alert infoAlert, errorAlert;
 
     public CustomDialog(User user){
         this.user = user;
-        infoAlert = new Alert(Alert.AlertType.INFORMATION);
-        errorAlert = new Alert(Alert.AlertType.ERROR);
 
         // all dialogs will have this background
         getDialogPane().getStylesheets().add(getClass().getResource(
