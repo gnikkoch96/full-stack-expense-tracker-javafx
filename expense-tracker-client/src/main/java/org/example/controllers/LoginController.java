@@ -4,6 +4,7 @@ import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
 import javafx.scene.input.MouseEvent;
 import org.example.utils.SqlUtil;
+import org.example.utils.Util;
 import org.example.views.DashboardView;
 import org.example.views.LoginView;
 import org.example.views.SignUpView;
@@ -29,18 +30,16 @@ public class LoginController {
                 // validate login
                 String results = SqlUtil.loginUser(email, password);
 
-                Alert alert;
-                if(results == null){
-                    // login failed
-                    alert = new Alert(Alert.AlertType.ERROR);
-                }else{
-                    // login successful (switch to dashboard)
-                    alert = new Alert(Alert.AlertType.INFORMATION);
+                Util.showAlertDialog(
+                        results == null ? Alert.AlertType.ERROR : Alert.AlertType.INFORMATION,
+                        results == null ? "Error: Invalid Credentials" : "Success: Login Successfully!"
+                );
+
+                if(results != null){
+                    // login successful
                     new DashboardView(results).show();
                 }
 
-                alert.setContentText(results == null ? "Error: Invalid Credentials" : "Success: Login Successfully!");
-                alert.showAndWait();
             }
         });
 
