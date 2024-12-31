@@ -37,26 +37,28 @@ public class DashboardController {
         // retrieve transactions
         userTransactions = SqlUtil.getAllTransactionsByUserId(user.getId());
 
-        // don't
-        if(userTransactions == null) return;
-
-        for(Transaction transaction : userTransactions){
-            dashboardView.getRecentTransactionsBox().getChildren().add(
-                    new TransactionComponent(this, transaction)
-            );
-        }
-
         // calculate the total income, total expense, and total balance
         // we use BigDecimal instead of double so that we can control how we round the numbers
+        // N: the reason for this change is so that we can recalculate if we delete the last transaction
         BigDecimal totalIncome = BigDecimal.ZERO;
         BigDecimal totalExpense = BigDecimal.ZERO;
 
-        for(Transaction transaction : userTransactions){
-            BigDecimal transactionAmount = BigDecimal.valueOf(transaction.getTransactionAmount()); // Convert to BigDecimal
-            if(transaction.getTransactionType().equalsIgnoreCase("income")){
-                totalIncome = totalIncome.add(transactionAmount);
-            }else{
-                totalExpense = totalExpense.add(transactionAmount);
+        if(userTransactions != null){
+            // render transaction components
+            for(Transaction transaction : userTransactions){
+                dashboardView.getRecentTransactionsBox().getChildren().add(
+                        new TransactionComponent(this, transaction)
+                );
+            }
+
+            // update total income and total expense
+            for(Transaction transaction : userTransactions){
+                BigDecimal transactionAmount = BigDecimal.valueOf(transaction.getTransactionAmount()); // Convert to BigDecimal
+                if(transaction.getTransactionType().equalsIgnoreCase("income")){
+                    totalIncome = totalIncome.add(transactionAmount);
+                }else{
+                    totalExpense = totalExpense.add(transactionAmount);
+                }
             }
         }
 
