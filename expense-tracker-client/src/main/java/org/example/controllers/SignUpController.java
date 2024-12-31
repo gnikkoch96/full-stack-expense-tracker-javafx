@@ -4,8 +4,10 @@ import com.google.gson.JsonObject;
 import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
 import javafx.scene.input.MouseEvent;
+import org.example.models.User;
 import org.example.utils.ApiHandler;
 import org.example.utils.SqlUtil;
+import org.example.utils.Util;
 import org.example.views.LoginView;
 import org.example.views.SignUpView;
 
@@ -24,22 +26,20 @@ public class SignUpController {
         signUpView.getRegisterButton().setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
-                if(!validateInput()) return;
+                if(!validateInput()){
+                    Util.showAlertDialog(Alert.AlertType.ERROR, "Error: Failed to Create Account...");
+                    return;
+                }
 
                 JsonObject jsonData = getJsonData();
 
                 // create user to database
                 boolean createAccountStatus = SqlUtil.postUser(jsonData);
 
-                Alert alert;
-                if(createAccountStatus){
-                    alert = new Alert(Alert.AlertType.INFORMATION);
-                }else{
-                    alert = new Alert(Alert.AlertType.ERROR);
-                }
-
-                alert.setContentText(createAccountStatus ? "Success: Account Created!" : "Error: Failed to Create Account...");
-                alert.showAndWait();
+                Util.showAlertDialog(
+                        createAccountStatus ? Alert.AlertType.INFORMATION : Alert.AlertType.ERROR,
+                        createAccountStatus ? "Success: Account Created!" : "Error: Failed to Create Account..."
+                );
 
                 // switch view to login view
                 new LoginView().show();
@@ -78,6 +78,12 @@ public class SignUpController {
         }
 
         // email already exists
+//        User user = SqlUtil.getUserByEmail(signUpView.getUsernameField().getText());
+//        if(user == null){
+//            // no user exists with this email yet
+//            return false;
+//        }
+
         HttpURLConnection httpConn = null;
         try {
             // call on the spring user api to get user by email

@@ -1,5 +1,6 @@
 package org.example.utils;
 
+import javafx.scene.control.Alert;
 import javafx.scene.control.ColorPicker;
 
 public class Util {
@@ -12,5 +13,11 @@ public class Util {
     public static String getHexColorValue(ColorPicker colorPicker){
         String color = colorPicker.getValue().toString();
         return color.substring(2, color.length() - 2);
+    }
+
+    public static void showAlertDialog(Alert.AlertType alertType, String message) {
+        Alert alert = new Alert(alertType);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }
