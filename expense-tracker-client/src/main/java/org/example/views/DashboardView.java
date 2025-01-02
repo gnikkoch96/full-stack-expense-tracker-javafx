@@ -1,12 +1,19 @@
 package org.example.views;
 
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.*;
 import org.example.controllers.DashboardController;
+import org.example.models.MonthlyFinance;
 import org.example.utils.Util;
 import org.example.utils.ViewNavigator;
+
+import java.math.BigDecimal;
 
 public class DashboardView implements View{
     private String email;
@@ -21,6 +28,9 @@ public class DashboardView implements View{
     private Label recentTransactionLabel;
     private Button addTransactionButton;
     private VBox recentTransactionsBox;
+
+    // table
+    private TableView<MonthlyFinance> transactionsTable;
 
     private DashboardController dashboardController;
 
@@ -121,6 +131,7 @@ public class DashboardView implements View{
 
     private GridPane createContentGridPane(){
         GridPane contentGridPane = new GridPane();
+        contentGridPane.setHgap(10);
 
         // set constraints to the cells in the gridpane
         ColumnConstraints col1 = new ColumnConstraints();
@@ -129,14 +140,67 @@ public class DashboardView implements View{
         col2.setPercentWidth(50);
         contentGridPane.getColumnConstraints().addAll(col1, col2);
 
+        VBox transactionsTableBox = createTransactionsTableBox();
+        GridPane.setVgrow(transactionsTableBox, Priority.ALWAYS);
+
         VBox transactionContentBox = createTransactionContentBox();
         transactionContentBox.getStyleClass().addAll("field-background", "rounded-border", "padding-10px");
         GridPane.setVgrow(transactionContentBox, Priority.ALWAYS);
 
-        // todo add table
-
+        contentGridPane.add(transactionsTableBox, 0, 0);
         contentGridPane.add(transactionContentBox, 1, 0);
         return contentGridPane;
+    }
+
+    private VBox createTransactionsTableBox(){
+        VBox transactionTableBox = new VBox();
+
+        transactionsTable = new TableView<>();
+        transactionsTable.getStyleClass().addAll("rounded-borders");
+
+        // 1st param data model to extract data from
+        // 2nd param is the type of the value we are extracting from the model
+        TableColumn<MonthlyFinance, String> monthColumn = new TableColumn<>("Month");
+
+        // we use PropertyValueFactory to extract the month/income/expense data from our MonthlyFinance data model
+        monthColumn.setCellValueFactory(new PropertyValueFactory<>("month"));
+
+        TableColumn<MonthlyFinance, BigDecimal> incomeColumn = new TableColumn<>("Income");
+        incomeColumn.setCellValueFactory(new PropertyValueFactory<>("income"));
+
+        TableColumn<MonthlyFinance, BigDecimal> expenseColumn = new TableColumn<>("Expense");
+        expenseColumn.setCellValueFactory(new PropertyValueFactory<>("expense"));
+
+        // todo will need to create a query for this
+        ObservableList<MonthlyFinance> monthlyFinances = FXCollections.observableArrayList(
+                new MonthlyFinance("January", new BigDecimal("5000.00"), new BigDecimal("2000.00")),
+                new MonthlyFinance("February", new BigDecimal("6000.00"), new BigDecimal("2500.00")),
+                new MonthlyFinance("March", new BigDecimal("4500.00"), new BigDecimal("1800.00")),
+                new MonthlyFinance("April", new BigDecimal("7000.00"), new BigDecimal("3000.00"))
+        );
+
+        transactionsTable.setItems(monthlyFinances);
+        transactionsTable.getColumns().addAll(monthColumn, incomeColumn, expenseColumn);
+        VBox.setVgrow(transactionsTable, Priority.ALWAYS);
+
+        /**
+         * We do this so that we can calculate the width of the transaction table correctly or else we get 0 as a return values
+         * The reason is that by the time we render the dashboard view, javafx is still calculating the layout sizes
+         * This is the standard and generally preferred way to handle layout-related operations that need the final sizes of components.
+         * Platform.runLater() schedules a task to be executed on the JavaFX application thread after the layout has been calculated.
+         */
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                double colsWidth = transactionsTable.getWidth() * (0.33);
+                monthColumn.setPrefWidth(colsWidth);
+                incomeColumn.setPrefWidth(colsWidth);
+                expenseColumn.setPrefWidth(colsWidth);
+            }
+        });
+
+        transactionTableBox.getChildren().add(transactionsTable);
+        return transactionTableBox;
     }
 
     private VBox createTransactionContentBox(){
@@ -164,7 +228,7 @@ public class DashboardView implements View{
         recentTransactionScrollpane.setFitToWidth(true);
         recentTransactionScrollpane.setFitToHeight(true);
 
-        VBox.setVgrow(recentTransactionScrollpane, Priority.ALWAYS);
+//        VBox.setVgrow(recentTransactionScrollpane, Priority.ALWAYS);
 
         transactionContentBox.getChildren().addAll(transactionLabelAndButton, recentTransactionScrollpane);
         return transactionContentBox;
