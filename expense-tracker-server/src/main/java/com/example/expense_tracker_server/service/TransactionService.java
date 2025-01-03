@@ -60,9 +60,22 @@ public class TransactionService {
 
     // read
     // Note: it returns the list in descending order by default
+    // todo might change this to recent transactions where it will only get the top 10 recent transactions
     public List<Transaction> getAllTransactionsByUserId(int userId){
         logger.info("Getting all Transaction for User: " + userId);
         return transactionRepository.findAllByUserIdOrderByTransactionDateDesc(userId);
+    }
+
+    public List<Transaction> getAllTransactionsByUserIdAndYear(int userId, int year){
+        logger.info("Getting all Transaction for User: " + userId );
+
+        LocalDate startDate = LocalDate.of(year, 1, 1);
+        LocalDate endDate = LocalDate.of(year, 12, 31);
+        return transactionRepository.findAllByUserIdAndTransactionDateBetweenOrderByTransactionDateDesc(
+                userId,
+                startDate,
+                endDate
+        );
     }
 
     public Optional<Transaction> getTransactionById(int id){

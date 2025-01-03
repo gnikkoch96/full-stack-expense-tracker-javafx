@@ -41,14 +41,21 @@ public class TransactionController {
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<Transaction>> getAllTransactionsByUserId(@PathVariable int userId){
-        logger.info("Getting All Transaction with User Id: " + userId);
-
-        List<Transaction> transactionList = transactionService.getAllTransactionsByUserId(userId);
-
-        if(transactionList.isEmpty()) return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-
-        return ResponseEntity.status(HttpStatus.OK).body(transactionList);
+    public ResponseEntity<List<Transaction>> getAllTransactionsByUserId(@PathVariable int userId,
+                        @RequestParam(required = false) Integer year) {
+        if(year == null){
+            // just get transactions like normal
+            logger.info("Getting All Transaction with User Id: " + userId);
+            List<Transaction> transactionList = transactionService.getAllTransactionsByUserId(userId);
+            if(transactionList.isEmpty()) return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+            return ResponseEntity.status(HttpStatus.OK).body(transactionList);
+        }else{
+            // get transaction but for a specific year only
+            logger.info("Getting All Transaction with User Id: " + userId + " @" + year);
+            List<Transaction> transactionList = transactionService.getAllTransactionsByUserIdAndYear(userId, year);
+            if(transactionList.isEmpty()) return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+            return ResponseEntity.status(HttpStatus.OK).body(transactionList);
+        }
     }
 
     @PutMapping
