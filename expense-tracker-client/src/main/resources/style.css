@@ -35,10 +35,19 @@ ScrollPane > .viewport {
    -fx-background-color: transparent;
 }
 
+/* add rounded border to the date picker */
+.date-picker .text-field{
+    -fx-border-radius: 10px;
+    -fx-background-radius: 10px;
+}
+
 /* Style the table header */
 .table-view .column-header {
-    -fx-background-color: red; /* Slightly darker gray header */
-    -fx-font-weight: bold;
+    -fx-background-color: #515050;
+}
+
+.table-view .column-header .label{
+    -fx-text-fill: #fff;
 }
 
 /* text */
@@ -94,8 +103,6 @@ ScrollPane > .viewport {
 }
 
 /* border */
-/* add rounded border to the date picker */
-.date-picker .text-field,
 .rounded-border{
     -fx-border-radius: 10px;
     -fx-background-radius: 10px;

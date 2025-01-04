@@ -1,11 +1,15 @@
 package org.example.controllers;
 
+import javafx.beans.Observable;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import org.example.components.TransactionComponent;
 import org.example.dialogs.CreateNewCategoryDialog;
 import org.example.dialogs.CreateOrEditTransactionDialog;
 import org.example.dialogs.ViewOrEditCategoryDialog;
+import org.example.models.MonthlyFinance;
 import org.example.models.Transaction;
 import org.example.models.User;
 import org.example.utils.SqlUtil;
@@ -14,15 +18,19 @@ import org.example.views.LoginView;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.time.Month;
 import java.util.List;
 
 public class DashboardController {
     private DashboardView dashboardView;
     private User user;
     private List<Transaction> userTransactions;
+    private int year;
 
-    public DashboardController(DashboardView dashboardView){
+    public DashboardController(DashboardView dashboardView, int year){
         this.dashboardView = dashboardView;
+        this.year = year;
         fetchUserData();
 
         addMenuActions();
@@ -36,6 +44,10 @@ public class DashboardController {
 
         // retrieve transactions
         userTransactions = SqlUtil.getAllTransactionsByUserId(user.getId());
+
+        // calculate table
+        dashboardView.getTransactionsTable().setItems(calculateMonthlyFinances());
+
 
         // calculate the total income, total expense, and total balance
         // we use BigDecimal instead of double so that we can control how we round the numbers
@@ -73,6 +85,7 @@ public class DashboardController {
         dashboardView.getTotalExpense().setText("$" + totalExpense);
         dashboardView.getTotalIncome().setText("$" + totalIncome);
         dashboardView.getCurrentBalance().setText("$" + currentBalance);
+
     }
 
     private void addMenuActions(){
@@ -107,6 +120,41 @@ public class DashboardController {
             }
         });
     }
+
+    private ObservableList<MonthlyFinance> calculateMonthlyFinances(){
+        // parallel indexing (each index refers to the month - 1, i.e. january is 1 but in index 0, february is 2 but in index 1)
+        double[] incomeCounter = new double[12];
+        double[] expenseCounter = new double[12];
+
+        // we do this so that we can still return 0s if there are no transactions
+        if(userTransactions != null){
+            // total up income and expense for each month
+            for(Transaction transaction : userTransactions){
+                LocalDate transactionDate = transaction.getTransactionDate();
+                if(transaction.getTransactionType().equalsIgnoreCase("income")){
+                    incomeCounter[transactionDate.getMonth().getValue() - 1] += transaction.getTransactionAmount();
+                }else{
+                    expenseCounter[transactionDate.getMonth().getValue() - 1] += transaction.getTransactionAmount();
+                }
+            }
+        }
+
+        // add each monthly finance
+        ObservableList<MonthlyFinance> monthlyFinances = FXCollections.observableArrayList();
+        for(int i = 0; i < 12; i++){
+            MonthlyFinance monthlyFinance = new MonthlyFinance(
+                    Month.of(i + 1).name(), // used to get the name based on the index
+                    new BigDecimal(String.valueOf(incomeCounter[i])),
+                    new BigDecimal(String.valueOf(expenseCounter[i]))
+            );
+
+            monthlyFinances.add(monthlyFinance);
+        }
+
+        return monthlyFinances;
+    }
+
+
 
     public User getUser(){
         return user;

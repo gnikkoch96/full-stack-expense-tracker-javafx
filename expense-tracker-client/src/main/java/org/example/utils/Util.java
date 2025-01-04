@@ -5,7 +5,7 @@ import javafx.scene.control.ColorPicker;
 
 public class Util {
     public static int APP_WIDTH = 1614;
-    public static int APP_HEIGHT = 833;
+    public static int APP_HEIGHT = 900;
 
     // Note: the reason why we removed two is because ColorPicker returns a hex that includes the alpha values which
     // we don't want. They are the last two characters so we substring them out before storing them into the database.

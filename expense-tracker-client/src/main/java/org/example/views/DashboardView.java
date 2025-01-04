@@ -1,8 +1,6 @@
 package org.example.views;
 
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -14,6 +12,7 @@ import org.example.utils.Util;
 import org.example.utils.ViewNavigator;
 
 import java.math.BigDecimal;
+import java.time.Year;
 
 public class DashboardView implements View{
     private String email;
@@ -27,12 +26,16 @@ public class DashboardView implements View{
 
     private Label recentTransactionLabel;
     private Button addTransactionButton;
+    private ComboBox<Integer> yearComboBox;
+
     private VBox recentTransactionsBox;
 
     // table
     private TableView<MonthlyFinance> transactionsTable;
 
     private DashboardController dashboardController;
+
+
 
     public DashboardView(String email){
         this.email = email;
@@ -47,6 +50,10 @@ public class DashboardView implements View{
         currentBalance = new Label("$0.00");
         totalIncome = new Label("$0.00");
         totalExpense = new Label("$0.00");
+
+        yearComboBox = new ComboBox<>();
+        yearComboBox.getStyleClass().addAll("text-size-md");
+        yearComboBox.setValue(Year.now().getValue());
     }
 
     @Override
@@ -56,7 +63,8 @@ public class DashboardView implements View{
                 "/style.css"
         ).toExternalForm());
 
-        dashboardController = new DashboardController(this);
+        // we pass in the this year
+        dashboardController = new DashboardController(this, Year.now().getValue());
 
         ViewNavigator.switchViews(scene);
     }
@@ -140,23 +148,24 @@ public class DashboardView implements View{
         col2.setPercentWidth(50);
         contentGridPane.getColumnConstraints().addAll(col1, col2);
 
-        VBox transactionsTableBox = createTransactionsTableBox();
-        GridPane.setVgrow(transactionsTableBox, Priority.ALWAYS);
+        VBox transactionsTableBox = new VBox(20);
+        VBox transactionsTableContentBox = createTransactionsTableContentBox();
+        VBox.setVgrow(transactionsTableContentBox, Priority.ALWAYS);
+        transactionsTableBox.getChildren().addAll(yearComboBox, transactionsTableContentBox);
 
-        VBox transactionContentBox = createTransactionContentBox();
-        transactionContentBox.getStyleClass().addAll("field-background", "rounded-border", "padding-10px");
-        GridPane.setVgrow(transactionContentBox, Priority.ALWAYS);
+        VBox recentTransactionsBox = createRecentTransactionsBox();
+        recentTransactionsBox.getStyleClass().addAll("field-background", "rounded-border", "padding-10px");
+        GridPane.setVgrow(recentTransactionsBox, Priority.ALWAYS);
 
         contentGridPane.add(transactionsTableBox, 0, 0);
-        contentGridPane.add(transactionContentBox, 1, 0);
+        contentGridPane.add(recentTransactionsBox, 1, 0);
         return contentGridPane;
     }
 
-    private VBox createTransactionsTableBox(){
+    private VBox createTransactionsTableContentBox(){
         VBox transactionTableBox = new VBox();
 
         transactionsTable = new TableView<>();
-        transactionsTable.getStyleClass().addAll("rounded-borders");
 
         // 1st param data model to extract data from
         // 2nd param is the type of the value we are extracting from the model
@@ -164,22 +173,16 @@ public class DashboardView implements View{
 
         // we use PropertyValueFactory to extract the month/income/expense data from our MonthlyFinance data model
         monthColumn.setCellValueFactory(new PropertyValueFactory<>("month"));
+        monthColumn.getStyleClass().addAll("main-background", "text-size-md", "text-light-gray");
 
         TableColumn<MonthlyFinance, BigDecimal> incomeColumn = new TableColumn<>("Income");
         incomeColumn.setCellValueFactory(new PropertyValueFactory<>("income"));
+        incomeColumn.getStyleClass().addAll("main-background", "text-size-md", "text-light-gray");
 
         TableColumn<MonthlyFinance, BigDecimal> expenseColumn = new TableColumn<>("Expense");
         expenseColumn.setCellValueFactory(new PropertyValueFactory<>("expense"));
+        expenseColumn.getStyleClass().addAll("main-background", "text-size-md", "text-light-gray");
 
-        // todo will need to create a query for this
-        ObservableList<MonthlyFinance> monthlyFinances = FXCollections.observableArrayList(
-                new MonthlyFinance("January", new BigDecimal("5000.00"), new BigDecimal("2000.00")),
-                new MonthlyFinance("February", new BigDecimal("6000.00"), new BigDecimal("2500.00")),
-                new MonthlyFinance("March", new BigDecimal("4500.00"), new BigDecimal("1800.00")),
-                new MonthlyFinance("April", new BigDecimal("7000.00"), new BigDecimal("3000.00"))
-        );
-
-        transactionsTable.setItems(monthlyFinances);
         transactionsTable.getColumns().addAll(monthColumn, incomeColumn, expenseColumn);
         VBox.setVgrow(transactionsTable, Priority.ALWAYS);
 
@@ -203,7 +206,7 @@ public class DashboardView implements View{
         return transactionTableBox;
     }
 
-    private VBox createTransactionContentBox(){
+    private VBox createRecentTransactionsBox(){
         VBox transactionContentBox = new VBox();
 
         // label and button
@@ -301,5 +304,13 @@ public class DashboardView implements View{
 
     public void setRecentTransactionsBox(VBox recentTransactionsBox) {
         this.recentTransactionsBox = recentTransactionsBox;
+    }
+
+    public TableView<MonthlyFinance> getTransactionsTable() {
+        return transactionsTable;
+    }
+
+    public void setTransactionsTable(TableView<MonthlyFinance> transactionsTable) {
+        this.transactionsTable = transactionsTable;
     }
 }
