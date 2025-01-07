@@ -35,8 +35,6 @@ public class DashboardView implements View{
 
     private DashboardController dashboardController;
 
-
-
     public DashboardView(String email){
         this.email = email;
         currentBalanceLabel = new Label("Current Balance:");
@@ -46,14 +44,9 @@ public class DashboardView implements View{
         recentTransactionLabel = new Label("Recent Transactions");
         addTransactionButton = new Button("+");
 
-        // test todo remove when you can get this value via calculations
-        currentBalance = new Label("$0.00");
-        totalIncome = new Label("$0.00");
-        totalExpense = new Label("$0.00");
-
-        yearComboBox = new ComboBox<>();
-        yearComboBox.getStyleClass().addAll("text-size-md");
-        yearComboBox.setValue(Year.now().getValue());
+        currentBalance = new Label();
+        totalIncome = new Label();
+        totalExpense = new Label();
     }
 
     @Override
@@ -149,8 +142,14 @@ public class DashboardView implements View{
         contentGridPane.getColumnConstraints().addAll(col1, col2);
 
         VBox transactionsTableBox = new VBox(20);
+
+        yearComboBox = new ComboBox<>();
+        yearComboBox.getStyleClass().addAll("text-size-md");
+        yearComboBox.setValue(Year.now().getValue());
+
         VBox transactionsTableContentBox = createTransactionsTableContentBox();
         VBox.setVgrow(transactionsTableContentBox, Priority.ALWAYS);
+
         transactionsTableBox.getChildren().addAll(yearComboBox, transactionsTableContentBox);
 
         VBox recentTransactionsBox = createRecentTransactionsBox();
@@ -312,5 +311,13 @@ public class DashboardView implements View{
 
     public void setTransactionsTable(TableView<MonthlyFinance> transactionsTable) {
         this.transactionsTable = transactionsTable;
+    }
+
+    public ComboBox<Integer> getYearComboBox() {
+        return yearComboBox;
+    }
+
+    public void setYearComboBox(ComboBox<Integer> yearComboBox) {
+        this.yearComboBox = yearComboBox;
     }
 }

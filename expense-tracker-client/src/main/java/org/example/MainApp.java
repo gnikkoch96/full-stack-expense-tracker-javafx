@@ -13,9 +13,9 @@ public class MainApp extends Application {
         ViewNavigator.setMainStage(stage);
 
         // the login view will be the first to be shown when the app is ran
-//        LoginView loginView = new LoginView();
-//        loginView.show();
+        LoginView loginView = new LoginView();
+        loginView.show();
 
-        new DashboardView("email@email.com").show();
+//        new DashboardView("email@email.com").show();
     }
 }

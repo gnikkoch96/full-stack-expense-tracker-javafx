@@ -93,13 +93,30 @@ public class SqlUtil {
         }
     }
 
-    public static List<Transaction> getAllTransactionsByUserId(int userId){
+    // note: year can be null depending on the data we are trying to get
+    // null year means get the top 10 recent transactinos
+    // having a year means we will only get the transactions for that year instead of all transactions
+    public static List<Transaction> getAllTransactionsByUserId(int userId, Integer year, Integer month){
         List<Transaction> transactions = new ArrayList<>();
+
 
         HttpURLConnection httpConn = null;
         try {
+            // depending on the year value it will add the year param to the url or not
+            String urlPath = "/api/transactions/user/" + userId;
+            System.out.println(year + " " + month);
+            if(year != null) {
+                urlPath += "?year=" + year;
+
+                if(month != null){
+                    urlPath += "&month=" + month;
+                }
+            }
+
+            System.out.println(urlPath);
+
             // call on the spring user api to get user by email
-            httpConn = ApiHandler.fetchApiResponse("/api/transactions/user/" + userId,
+            httpConn = ApiHandler.fetchApiResponse(urlPath,
                     ApiHandler.RequestMethod.GET, null);
 
             if(httpConn != null && httpConn.getResponseCode() != 200){
