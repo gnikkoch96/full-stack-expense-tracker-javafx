@@ -1,5 +1,7 @@
 package org.example.controllers;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -27,15 +29,20 @@ import java.time.Month;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class DashboardController {
+    private final int recentTransactionSize = 10; // used to control how much transactions are shown in the recent transactions box
+
     private DashboardView dashboardView;
     private User user;
 
     private List<Transaction> recentTransactions;
+    private int currentPage; // used to keep track of the pagination, note whenever we hit the end of the scroll we will increment the page and then fetch the next page of data
+
     private List<Transaction> currentTransactionsByYear;
 
-    // todo think of a better way of doing this
+    // todo think of a better way of doing this (i.e. filtering)
     private List<Transaction> allUserTransactions;
 
     private int currentYear;
@@ -44,35 +51,52 @@ public class DashboardController {
         this.dashboardView = dashboardView;
         this.currentYear = currentYear;
         fetchUserData();
-
         addMenuActions();
         addContentActions();
         addTableActions();
     }
 
     public void fetchUserData(){
+        dashboardView.getLoadingAnimationPane().setVisible(true);
+
         dashboardView.getRecentTransactionsBox().getChildren().clear();
 
         user = SqlUtil.getUserByEmail(dashboardView.getEmail());
 
-        // retrieve transactions
-        recentTransactions = SqlUtil.getAllTransactionsByUserId(user.getId(), null, null);
+        // get recent transactions
+        recentTransactions = SqlUtil.getRecentTransactionsByUserId(user.getId(), 0, currentPage, recentTransactionSize);
         allUserTransactions = SqlUtil.getAllTransactionsByUserId(user.getId(), null, null);
-        currentTransactionsByYear = SqlUtil.getAllTransactionsByUserId(user.getId(), currentYear, null);
 
-        System.out.println("Retrieved all transactions");
+        // getting by filter instead of querying database
+        currentTransactionsByYear = allUserTransactions.stream()
+                .filter(transaction -> transaction.getTransactionDate().getYear() == currentYear)
+                .collect(Collectors.toList());
+
+        //        currentTransactionsByYear = SqlUtil.getAllTransactionsByUserId(user.getId(), currentYear, null);
 
         calculateValidYears();
+        calculateBalanceAndIncomeAndExpense();
 
         // calculate table
         dashboardView.getTransactionsTable().setItems(calculateMonthlyFinances());
+        createRecentTransactionComponents();
 
-        // calculate the total income, total expense, and total balance
-        // we use BigDecimal instead of double so that we can control how we round the numbers
-        // N: the reason for this change is so that we can recalculate if we delete the last transaction
-        BigDecimal totalIncome = BigDecimal.ZERO;
-        BigDecimal totalExpense = BigDecimal.ZERO;
+        // for demo purposes
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(1000);
+                    dashboardView.getLoadingAnimationPane().setVisible(false);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }).start();
+    }
 
+    // creates transaction components based of the recent transaction list
+    private void createRecentTransactionComponents(){
         if(recentTransactions != null){
             // render transaction components
             for(Transaction transaction : recentTransactions){
@@ -81,6 +105,13 @@ public class DashboardController {
                 );
             }
         }
+    }
+
+    private void calculateBalanceAndIncomeAndExpense(){
+        // we use BigDecimal instead of double so that we can control how we round the numbers
+        // N: the reason for this change is so that we can recalculate if we delete the last transaction
+        BigDecimal totalIncome = BigDecimal.ZERO;
+        BigDecimal totalExpense = BigDecimal.ZERO;
 
         if(currentTransactionsByYear != null){
             // update total income and total expense
@@ -105,78 +136,6 @@ public class DashboardController {
         dashboardView.getTotalExpense().setText("$" + totalExpense);
         dashboardView.getTotalIncome().setText("$" + totalIncome);
         dashboardView.getCurrentBalance().setText("$" + currentBalance);
-
-    }
-
-    private void addMenuActions(){
-        dashboardView.getCreateCategoryMenuItem().setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                new CreateNewCategoryDialog(user).showAndWait();
-            }
-        });
-
-        dashboardView.getViewCategoriesMenuItem().setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                new ViewOrEditCategoryDialog(user, DashboardController.this).showAndWait();
-            }
-        });
-
-        dashboardView.getLogoutMenuItem().setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                new LoginView().show();
-            }
-        });
-    }
-
-    private void addContentActions(){
-        dashboardView.getAddTransactionButton().setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                // launch create transaction dialog
-                new CreateOrEditTransactionDialog(DashboardController.this, true).showAndWait();
-            }
-        });
-    }
-
-    private void addTableActions(){
-        dashboardView.getYearComboBox().setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                // update current year
-                currentYear = dashboardView.getYearComboBox().getValue();
-
-                // refresh data
-                fetchUserData();
-            }
-        });
-
-
-        // add an action listener to each table row
-        dashboardView.getTransactionsTable().setRowFactory(new Callback<TableView<MonthlyFinance>, TableRow<MonthlyFinance>>() {
-            @Override
-            public TableRow<MonthlyFinance> call(TableView<MonthlyFinance> monthlyFinanceTableView) {
-                TableRow<MonthlyFinance> row = new TableRow<>();
-
-                row.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                    @Override
-                    public void handle(MouseEvent mouseEvent) {
-                        if(!row.isEmpty() && mouseEvent.getClickCount() == 2){
-                            MonthlyFinance monthlyFinance = row.getItem();
-                            new ViewTransactionsDialog(
-                                    user,
-                                    DashboardController.this,
-                                    monthlyFinance.getMonth()
-                            ).showAndWait();
-                        }
-                    }
-                });
-
-                return row;
-            }
-        });
     }
 
     private void calculateValidYears(){
@@ -227,6 +186,96 @@ public class DashboardController {
         }
 
         return monthlyFinances;
+    }
+
+    private void addMenuActions(){
+        dashboardView.getCreateCategoryMenuItem().setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                new CreateNewCategoryDialog(user).showAndWait();
+            }
+        });
+
+        dashboardView.getViewCategoriesMenuItem().setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                new ViewOrEditCategoryDialog(user, DashboardController.this).showAndWait();
+            }
+        });
+
+        dashboardView.getLogoutMenuItem().setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                new LoginView().show();
+            }
+        });
+    }
+
+    private void addTableActions(){
+        dashboardView.getYearComboBox().setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                // update current year
+                currentYear = dashboardView.getYearComboBox().getValue();
+
+                // refresh data
+                fetchUserData();
+            }
+        });
+
+
+        // add an action listener to each table row
+        dashboardView.getTransactionsTable().setRowFactory(new Callback<TableView<MonthlyFinance>, TableRow<MonthlyFinance>>() {
+            @Override
+            public TableRow<MonthlyFinance> call(TableView<MonthlyFinance> monthlyFinanceTableView) {
+                TableRow<MonthlyFinance> row = new TableRow<>();
+
+                row.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent mouseEvent) {
+                        if(!row.isEmpty() && mouseEvent.getClickCount() == 2){
+                            MonthlyFinance monthlyFinance = row.getItem();
+                            new ViewTransactionsDialog(
+                                    user,
+                                    DashboardController.this,
+                                    monthlyFinance.getMonth()
+                            ).showAndWait();
+                        }
+                    }
+                });
+
+                return row;
+            }
+        });
+    }
+
+    private void addContentActions(){
+        dashboardView.getAddTransactionButton().setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                // launch create transaction dialog
+                new CreateOrEditTransactionDialog(DashboardController.this, true).showAndWait();
+            }
+        });
+
+        // add a listener to the scroll pane (vertical only which is what the vvalueproperty does)
+        dashboardView.getRecentTransactionsScrollPane().vvalueProperty().addListener(new ChangeListener<Number>() {
+            // we will use t1 to tell if we have reached the end of the scroll or not
+            // note: scroll value goes from 0 to 1 where 0 is at the top and 1 is all the way at the bottom
+            // this is how we are going to be telling if the scroll is at the end or not
+            @Override
+            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
+                // the second check is to make sure that we aren't always fetching user data every time we scroll all the way down
+                if(t1.intValue() == 1 && recentTransactions.size() < allUserTransactions.size()){ // reached the end of the scroll pane
+                    // increment page
+                    currentPage++;
+
+                    // update list
+                    fetchUserData();
+                }
+
+            }
+        });
     }
 
     public User getUser(){

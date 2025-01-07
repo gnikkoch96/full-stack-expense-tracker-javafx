@@ -6,6 +6,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.*;
+import org.example.animations.LoadingAnimationPane;
 import org.example.controllers.DashboardController;
 import org.example.models.MonthlyFinance;
 import org.example.utils.Util;
@@ -20,6 +21,8 @@ public class DashboardView implements View{
     // menu
     private MenuItem createCategoryMenuItem, viewCategoriesMenuItem, logoutMenuItem;
 
+    private LoadingAnimationPane loadingAnimationPane;
+
     private Label currentBalanceLabel, currentBalance;
     private Label totalIncomeLabel, totalIncome;
     private Label totalExpenseLabel, totalExpense;
@@ -29,6 +32,7 @@ public class DashboardView implements View{
     private ComboBox<Integer> yearComboBox;
 
     private VBox recentTransactionsBox;
+    private ScrollPane recentTransactionsScrollPane;
 
     // table
     private TableView<MonthlyFinance> transactionsTable;
@@ -37,6 +41,8 @@ public class DashboardView implements View{
 
     public DashboardView(String email){
         this.email = email;
+        loadingAnimationPane = new LoadingAnimationPane(Util.APP_WIDTH, Util.APP_HEIGHT);
+
         currentBalanceLabel = new Label("Current Balance:");
         totalIncomeLabel = new Label("Total Income:");
         totalExpenseLabel = new Label("Total Expense:");
@@ -82,7 +88,8 @@ public class DashboardView implements View{
         VBox.setVgrow(contentGridPane, Priority.ALWAYS); // expands grid vertically to fit the rest of the parent
 
         vBoxContent.getChildren().addAll(balanceSummaryBox, contentGridPane);
-        vBox.getChildren().addAll(vBoxContent);
+        vBox.getChildren().addAll(vBoxContent, loadingAnimationPane);
+
         return new Scene(vBox, Util.APP_WIDTH, Util.APP_HEIGHT);
     }
 
@@ -224,15 +231,15 @@ public class DashboardView implements View{
         recentTransactionsBox = new VBox(10);
         recentTransactionsBox.getStyleClass().addAll();
 
-        ScrollPane recentTransactionScrollpane = new ScrollPane(recentTransactionsBox);
+        recentTransactionsScrollPane = new ScrollPane(recentTransactionsBox);
 
         // makes scroll pane take up the width and height of its parent
-        recentTransactionScrollpane.setFitToWidth(true);
-        recentTransactionScrollpane.setFitToHeight(true);
+        recentTransactionsScrollPane.setFitToWidth(true);
+        recentTransactionsScrollPane.setFitToHeight(true);
 
 //        VBox.setVgrow(recentTransactionScrollpane, Priority.ALWAYS);
 
-        transactionContentBox.getChildren().addAll(transactionLabelAndButton, recentTransactionScrollpane);
+        transactionContentBox.getChildren().addAll(transactionLabelAndButton, recentTransactionsScrollPane);
         return transactionContentBox;
     }
 
@@ -319,5 +326,21 @@ public class DashboardView implements View{
 
     public void setYearComboBox(ComboBox<Integer> yearComboBox) {
         this.yearComboBox = yearComboBox;
+    }
+
+    public ScrollPane getRecentTransactionsScrollPane() {
+        return recentTransactionsScrollPane;
+    }
+
+    public void setRecentTransactionsScrollPane(ScrollPane recentTransactionsScrollPane) {
+        this.recentTransactionsScrollPane = recentTransactionsScrollPane;
+    }
+
+    public LoadingAnimationPane getLoadingAnimationPane() {
+        return loadingAnimationPane;
+    }
+
+    public void setLoadingAnimationPane(LoadingAnimationPane loadingAnimationPane) {
+        this.loadingAnimationPane = loadingAnimationPane;
     }
 }

@@ -99,7 +99,6 @@ public class SqlUtil {
     public static List<Transaction> getAllTransactionsByUserId(int userId, Integer year, Integer month){
         List<Transaction> transactions = new ArrayList<>();
 
-
         HttpURLConnection httpConn = null;
         try {
             // depending on the year value it will add the year param to the url or not
@@ -113,6 +112,62 @@ public class SqlUtil {
                 }
             }
 
+            System.out.println(urlPath);
+
+            // call on the spring user api to get user by email
+            httpConn = ApiHandler.fetchApiResponse(urlPath,
+                    ApiHandler.RequestMethod.GET, null);
+
+            if(httpConn != null && httpConn.getResponseCode() != 200){
+                System.out.println("Error: " + httpConn.getResponseCode());
+                return null;
+            }
+
+            String results = ApiHandler.readApiResponse(httpConn);
+            JsonArray resultJson = new JsonParser().parse(results).getAsJsonArray();
+
+            for(int i = 0; i < resultJson.size(); i++){
+                JsonObject transactionObj = resultJson.get(i).getAsJsonObject();
+                int transactionId = transactionObj.get("id").getAsInt();
+
+                TransactionCategory transactionCategory = null;
+                if (transactionObj.has("transactionCategory") && !transactionObj.get("transactionCategory").isJsonNull()) { // Check if the field exists and is not null
+                    JsonObject transactionCategoryObject = transactionObj.get("transactionCategory").getAsJsonObject();
+                    int transactionCategoryId = transactionCategoryObject.get("id").getAsInt();
+                    String transactionCategoryName = transactionCategoryObject.get("categoryName").getAsString();
+                    String transactionCategoryColor = transactionCategoryObject.get("categoryColor").getAsString();
+                    transactionCategory = new TransactionCategory(transactionCategoryId, transactionCategoryName, transactionCategoryColor);
+                }
+
+                String transactionName = transactionObj.get("transactionName").getAsString();
+                double transactionAmount = transactionObj.get("transactionAmount").getAsDouble();
+                LocalDate transactionDate = LocalDate.parse(transactionObj.get("transactionDate").getAsString());
+                String transactionType = transactionObj.get("transactionType").getAsString();
+
+                // create transaction obj
+                Transaction transaction = new Transaction(transactionId, transactionCategory, transactionName,
+                        transactionAmount, transactionDate, transactionType);
+                transactions.add(transaction);
+            }
+
+            return transactions;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }finally {
+            // safely disconnect from the api
+            if(httpConn != null)
+                httpConn.disconnect();
+        }
+    }
+
+    // page - refers to the page that we want
+    public static List<Transaction> getRecentTransactionsByUserId(int userId, int startPage, int endPage, int size){
+        List<Transaction> transactions = new ArrayList<>();
+
+        HttpURLConnection httpConn = null;
+        try {
+            // depending on the year value it will add the year param to the url or not
+            String urlPath = "/api/transactions/recent/user/" + userId + "?startPage=" + startPage + "&endPage=" + endPage + "&size=" + size;
             System.out.println(urlPath);
 
             // call on the spring user api to get user by email
