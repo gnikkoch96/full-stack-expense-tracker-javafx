@@ -24,4 +24,16 @@ public class LoadingAnimationPane extends Pane {
         setVisible(false);
         setManaged(false);
     }
+
+    public void resizeWidth(double newWidth){
+        rectangle.setWidth(newWidth);
+        loadingLabel.setLayoutX(newWidth/2 - 70);
+        setMinWidth(newWidth);
+    }
+
+    public void resizeHeight(double newHeight){
+        rectangle.setHeight(newHeight);
+        loadingLabel.setLayoutY(newHeight/2 - 70);
+        setMinHeight(newHeight);
+    }
 }

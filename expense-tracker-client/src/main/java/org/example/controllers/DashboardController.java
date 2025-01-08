@@ -37,14 +37,10 @@ public class DashboardController {
     private DashboardView dashboardView;
     private User user;
 
+    private List<Transaction> allUserTransactions;
+    private List<Transaction> currentTransactionsByYear;
     private List<Transaction> recentTransactions;
     private int currentPage; // used to keep track of the pagination, note whenever we hit the end of the scroll we will increment the page and then fetch the next page of data
-
-    private List<Transaction> currentTransactionsByYear;
-
-    // todo think of a better way of doing this (i.e. filtering)
-    private List<Transaction> allUserTransactions;
-
     private int currentYear;
 
     public DashboardController(DashboardView dashboardView, int currentYear){
@@ -63,8 +59,6 @@ public class DashboardController {
 
         user = SqlUtil.getUserByEmail(dashboardView.getEmail());
 
-        // get recent transactions
-        recentTransactions = SqlUtil.getRecentTransactionsByUserId(user.getId(), 0, currentPage, recentTransactionSize);
         allUserTransactions = SqlUtil.getAllTransactionsByUserId(user.getId(), null, null);
 
         // getting by filter instead of querying database
@@ -72,6 +66,8 @@ public class DashboardController {
                 .filter(transaction -> transaction.getTransactionDate().getYear() == currentYear)
                 .collect(Collectors.toList());
 
+        // get recent transactions
+        recentTransactions = SqlUtil.getRecentTransactionsByUserId(user.getId(), 0, currentPage, recentTransactionSize);
         //        currentTransactionsByYear = SqlUtil.getAllTransactionsByUserId(user.getId(), currentYear, null);
 
         calculateValidYears();

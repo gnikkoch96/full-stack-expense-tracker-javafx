@@ -1,6 +1,8 @@
 package org.example.views;
 
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -29,6 +31,7 @@ public class DashboardView implements View{
 
     private Label recentTransactionLabel;
     private Button addTransactionButton;
+    private Button viewChartButton;
     private ComboBox<Integer> yearComboBox;
 
     private VBox recentTransactionsBox;
@@ -62,8 +65,22 @@ public class DashboardView implements View{
                 "/style.css"
         ).toExternalForm());
 
-        // we pass in the this year
         dashboardController = new DashboardController(this, Year.now().getValue());
+
+        // add a listener to the width and height changes (important to keep UI responsive)
+        scene.widthProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
+                loadingAnimationPane.resizeWidth(t1.doubleValue());
+            }
+        });
+
+        scene.heightProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
+                loadingAnimationPane.resizeHeight(t1.doubleValue());
+            }
+        });
 
         ViewNavigator.switchViews(scene);
     }
@@ -149,15 +166,11 @@ public class DashboardView implements View{
         contentGridPane.getColumnConstraints().addAll(col1, col2);
 
         VBox transactionsTableBox = new VBox(20);
-
-        yearComboBox = new ComboBox<>();
-        yearComboBox.getStyleClass().addAll("text-size-md");
-        yearComboBox.setValue(Year.now().getValue());
-
+        HBox comboBoxAndChartButtonContainer = createComboBoxAndChartButtonContainer();
         VBox transactionsTableContentBox = createTransactionsTableContentBox();
         VBox.setVgrow(transactionsTableContentBox, Priority.ALWAYS);
 
-        transactionsTableBox.getChildren().addAll(yearComboBox, transactionsTableContentBox);
+        transactionsTableBox.getChildren().addAll(comboBoxAndChartButtonContainer, transactionsTableContentBox);
 
         VBox recentTransactionsBox = createRecentTransactionsBox();
         recentTransactionsBox.getStyleClass().addAll("field-background", "rounded-border", "padding-10px");
@@ -166,6 +179,19 @@ public class DashboardView implements View{
         contentGridPane.add(transactionsTableBox, 0, 0);
         contentGridPane.add(recentTransactionsBox, 1, 0);
         return contentGridPane;
+    }
+
+    private HBox createComboBoxAndChartButtonContainer(){
+        HBox hbox = new HBox(15);
+        yearComboBox = new ComboBox<>();
+        yearComboBox.getStyleClass().addAll("text-size-md");
+        yearComboBox.setValue(Year.now().getValue());
+
+        viewChartButton = new Button("View Chart");
+        viewChartButton.getStyleClass().addAll("field-background", "text-light-gray", "text-size-md");
+
+        hbox.getChildren().addAll(yearComboBox, viewChartButton);
+        return hbox;
     }
 
     private VBox createTransactionsTableContentBox(){
