@@ -25,12 +25,15 @@ public class LoadingAnimationPane extends Pane {
         setManaged(false);
     }
 
+    // these methods are so that we can change the width of the UI nodes when the scene's size changes (makes it more responsive)
     public void resizeWidth(double newWidth){
         rectangle.setWidth(newWidth);
         loadingLabel.setLayoutX(newWidth/2 - 70);
         setMinWidth(newWidth);
     }
 
+
+    // these methods are so that we can change the height of the UI nodes when the scene's size changes (makes it more responsive)
     public void resizeHeight(double newHeight){
         rectangle.setHeight(newHeight);
         loadingLabel.setLayoutY(newHeight/2 - 70);

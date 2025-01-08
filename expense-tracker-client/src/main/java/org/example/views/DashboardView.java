@@ -39,6 +39,9 @@ public class DashboardView implements View{
 
     // table
     private TableView<MonthlyFinance> transactionsTable;
+    private TableColumn<MonthlyFinance, String> monthColumn;
+    private TableColumn<MonthlyFinance, BigDecimal> incomeColumn;
+    private TableColumn<MonthlyFinance, BigDecimal> expenseColumn;
 
     private DashboardController dashboardController;
 
@@ -72,6 +75,7 @@ public class DashboardView implements View{
             @Override
             public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
                 loadingAnimationPane.resizeWidth(t1.doubleValue());
+                resizeTableWidthColumns();
             }
         });
 
@@ -201,38 +205,24 @@ public class DashboardView implements View{
 
         // 1st param data model to extract data from
         // 2nd param is the type of the value we are extracting from the model
-        TableColumn<MonthlyFinance, String> monthColumn = new TableColumn<>("Month");
+        monthColumn = new TableColumn<>("Month");
 
         // we use PropertyValueFactory to extract the month/income/expense data from our MonthlyFinance data model
         monthColumn.setCellValueFactory(new PropertyValueFactory<>("month"));
         monthColumn.getStyleClass().addAll("main-background", "text-size-md", "text-light-gray");
 
-        TableColumn<MonthlyFinance, BigDecimal> incomeColumn = new TableColumn<>("Income");
+        incomeColumn = new TableColumn<>("Income");
         incomeColumn.setCellValueFactory(new PropertyValueFactory<>("income"));
         incomeColumn.getStyleClass().addAll("main-background", "text-size-md", "text-light-gray");
 
-        TableColumn<MonthlyFinance, BigDecimal> expenseColumn = new TableColumn<>("Expense");
+        expenseColumn = new TableColumn<>("Expense");
         expenseColumn.setCellValueFactory(new PropertyValueFactory<>("expense"));
         expenseColumn.getStyleClass().addAll("main-background", "text-size-md", "text-light-gray");
 
         transactionsTable.getColumns().addAll(monthColumn, incomeColumn, expenseColumn);
         VBox.setVgrow(transactionsTable, Priority.ALWAYS);
 
-        /**
-         * We do this so that we can calculate the width of the transaction table correctly or else we get 0 as a return values
-         * The reason is that by the time we render the dashboard view, javafx is still calculating the layout sizes
-         * This is the standard and generally preferred way to handle layout-related operations that need the final sizes of components.
-         * Platform.runLater() schedules a task to be executed on the JavaFX application thread after the layout has been calculated.
-         */
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                double colsWidth = transactionsTable.getWidth() * (0.33);
-                monthColumn.setPrefWidth(colsWidth);
-                incomeColumn.setPrefWidth(colsWidth);
-                expenseColumn.setPrefWidth(colsWidth);
-            }
-        });
+        resizeTableWidthColumns();
 
         transactionTableBox.getChildren().add(transactionsTable);
         return transactionTableBox;
@@ -267,6 +257,24 @@ public class DashboardView implements View{
 
         transactionContentBox.getChildren().addAll(transactionLabelAndButton, recentTransactionsScrollPane);
         return transactionContentBox;
+    }
+
+    private void resizeTableWidthColumns(){
+        /**
+         * We do this so that we can calculate the width of the transaction table correctly or else we get 0 as a return values
+         * The reason is that by the time we render the dashboard view, javafx is still calculating the layout sizes
+         * This is the standard and generally preferred way to handle layout-related operations that need the final sizes of components.
+         * Platform.runLater() schedules a task to be executed on the JavaFX application thread after the layout has been calculated.
+         */
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                double colsWidth = transactionsTable.getWidth() * (0.33);
+                monthColumn.setPrefWidth(colsWidth);
+                incomeColumn.setPrefWidth(colsWidth);
+                expenseColumn.setPrefWidth(colsWidth);
+            }
+        });
     }
 
     // getters and setters
