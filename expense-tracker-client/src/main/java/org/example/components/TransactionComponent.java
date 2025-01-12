@@ -85,7 +85,8 @@ public class TransactionComponent extends HBox {
         editBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                new CreateOrEditTransactionDialog(dashboardController, transaction, false).showAndWait();
+                new CreateOrEditTransactionDialog(dashboardController, TransactionComponent.this,
+                        false).showAndWait();
             }
         });
 
@@ -115,6 +116,32 @@ public class TransactionComponent extends HBox {
         actionButtons.getChildren().addAll(editBtn, delBtn);
         return actionButtons;
     }
+
+    public Transaction getTransaction() {
+        return transaction;
+    }
+
+    public DashboardController getDashboardController() {
+        return dashboardController;
+    }
+
+    public Label getTransactionCategoryLabel() {
+        return transactionCategoryLabel;
+    }
+
+    public Label getTransactionNameLabel() {
+        return transactionNameLabel;
+    }
+
+    public Label getTransactionAmount() {
+        return transactionAmount;
+    }
+
+    public Label getTransactionDateLabel() {
+        return transactionDateLabel;
+    }
+
+
 }
 
 

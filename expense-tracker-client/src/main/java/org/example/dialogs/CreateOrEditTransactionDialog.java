@@ -7,6 +7,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import org.example.components.TransactionComponent;
 import org.example.controllers.DashboardController;
 import org.example.models.Transaction;
 import org.example.models.TransactionCategory;
@@ -29,16 +30,16 @@ public class CreateOrEditTransactionDialog extends CustomDialog{
     private ToggleGroup transactionTypeToggleGroup;
 
     // this is used for editing the transaction.
-    private Transaction transaction;
+    private TransactionComponent transactionComponent;
     private boolean isCreating;
 
-    // this has to go first so that transaction isn't null in the beginning
-    public CreateOrEditTransactionDialog(DashboardController dashboardController, Transaction transaction,
+    // this has to go first (than the other constructors) so that transaction isn't null in the beginning
+    public CreateOrEditTransactionDialog(DashboardController dashboardController, TransactionComponent transactionComponent,
                                          boolean isCreating) {
         super(dashboardController.getUser());
         this.dashboardController = dashboardController;
         this.isCreating = isCreating;
-        this.transaction = transaction;
+        this.transactionComponent = transactionComponent;
 
         setTitle(isCreating ? "Create New Transaction" : "Edit Transaction");
         setWidth(700);
@@ -53,6 +54,10 @@ public class CreateOrEditTransactionDialog extends CustomDialog{
     public CreateOrEditTransactionDialog(DashboardController dashboardController, boolean isCreating) {
         // this will call on the other constructor as it's going to be pretty much the same here
         this(dashboardController, null, isCreating);
+    }
+
+    public CreateOrEditTransactionDialog(TransactionComponent transactionComponent, boolean isCreating){
+        this(transactionComponent.getDashboardController(), transactionComponent, isCreating);
     }
 
     private VBox createContentBox(){
@@ -86,6 +91,8 @@ public class CreateOrEditTransactionDialog extends CustomDialog{
         transactionCategoryBox.setPrefWidth(Double.MAX_VALUE);
 
         if(!isCreating){
+            Transaction transaction = transactionComponent.getTransaction();
+
             // populate the fields with the transaction data
             transactionNameField.setText(transaction.getTransactionName());
             transactionAmountField.setText(String.valueOf(transaction.getTransactionAmount()));
@@ -119,6 +126,8 @@ public class CreateOrEditTransactionDialog extends CustomDialog{
         radioButtons.getChildren().addAll(incomeRadioBtn, expenseRadioBtn);
 
         if(!isCreating){
+            Transaction transaction = transactionComponent.getTransaction();
+
             // select the corresponding type button
             if (transaction.getTransactionType().equalsIgnoreCase("income")) {
                 incomeRadioBtn.setSelected(true);
@@ -198,7 +207,7 @@ public class CreateOrEditTransactionDialog extends CustomDialog{
         JsonObject transactionData = new JsonObject();
 
         if(!isCreating){
-            transactionData.addProperty("id", transaction.getId());
+            transactionData.addProperty("id", transactionComponent.getTransaction().getId());
         }
 
         TransactionCategory category = getTransactionCategoryByName(transactionCategoryBox.getValue());
@@ -221,13 +230,38 @@ public class CreateOrEditTransactionDialog extends CustomDialog{
         double transactionAmount = Double.parseDouble(transactionAmountField.getText());
         transactionData.addProperty("transactionAmount", transactionAmount);
 
-        LocalDate dateTime = transactionDatePicker.getValue();
-        transactionData.addProperty("transactionDate", dateTime.format(DateTimeFormatter.ISO_LOCAL_DATE));
+        LocalDate transactionDate = transactionDatePicker.getValue();
+        transactionData.addProperty("transactionDate", transactionDate.format(DateTimeFormatter.ISO_LOCAL_DATE));
 
         String transactionType = ((RadioButton) transactionTypeToggleGroup.getSelectedToggle()).getText();
         transactionData.addProperty("transactionType", transactionType);
 
+        // update transaction component
+        updateTransactionComponent(transactionName, transactionAmount, transactionDate, transactionType, category);
+
         return transactionData;
+    }
+
+    private void updateTransactionComponent(String transactionName, double transactionAmount,
+                                            LocalDate transactionDate, String transactionType, TransactionCategory transactionCategory){
+        transactionComponent.getTransactionNameLabel().setText(transactionName);
+        transactionComponent.getTransactionDateLabel().setText(transactionDate.toString());
+
+        // category
+        if(transactionCategory != null){
+            transactionComponent.getTransactionCategoryLabel().setText(transactionCategory.getCategoryName());
+            transactionComponent.getTransactionCategoryLabel().setStyle("-fx-background: #" + transactionCategory.getCategoryColor());
+        }
+
+        // amount
+        transactionComponent.getTransactionAmount().setText("$" + transactionAmount);
+
+        // depending if it is income or expense
+        if(transactionType.equalsIgnoreCase("income")){
+            transactionComponent.getTransactionAmount().getStyleClass().add("text-light-green");
+        }else{
+            transactionComponent.getTransactionAmount().getStyleClass().add("text-light-red");
+        }
     }
 
     private TransactionCategory getTransactionCategoryByName(String categoryName){

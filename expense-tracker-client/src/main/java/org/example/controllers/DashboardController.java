@@ -11,10 +11,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.input.MouseEvent;
 import javafx.util.Callback;
 import org.example.components.TransactionComponent;
-import org.example.dialogs.CreateNewCategoryDialog;
-import org.example.dialogs.CreateOrEditTransactionDialog;
-import org.example.dialogs.ViewOrEditCategoryDialog;
-import org.example.dialogs.ViewTransactionsDialog;
+import org.example.dialogs.*;
 import org.example.models.MonthlyFinance;
 import org.example.models.Transaction;
 import org.example.models.User;
@@ -50,6 +47,15 @@ public class DashboardController {
         addMenuActions();
         addContentActions();
         addTableActions();
+
+        // todo refactor (possibly put this in its own method)
+        dashboardView.getViewChartButton().setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                new ViewChartDialog(user, dashboardView.getTransactionsTable().getItems())
+                        .showAndWait();
+            }
+        });
     }
 
     public void fetchUserData(){
@@ -58,17 +64,16 @@ public class DashboardController {
         dashboardView.getRecentTransactionsBox().getChildren().clear();
 
         user = SqlUtil.getUserByEmail(dashboardView.getEmail());
-
         allUserTransactions = SqlUtil.getAllTransactionsByUserId(user.getId(), null, null);
 
         // getting by filter instead of querying database
         currentTransactionsByYear = allUserTransactions.stream()
                 .filter(transaction -> transaction.getTransactionDate().getYear() == currentYear)
                 .collect(Collectors.toList());
+        //        currentTransactionsByYear = SqlUtil.getAllTransactionsByUserId(user.getId(), currentYear, null);
 
         // get recent transactions
         recentTransactions = SqlUtil.getRecentTransactionsByUserId(user.getId(), 0, currentPage, recentTransactionSize);
-        //        currentTransactionsByYear = SqlUtil.getAllTransactionsByUserId(user.getId(), currentYear, null);
 
         calculateValidYears();
         calculateBalanceAndIncomeAndExpense();
@@ -218,7 +223,6 @@ public class DashboardController {
                 fetchUserData();
             }
         });
-
 
         // add an action listener to each table row
         dashboardView.getTransactionsTable().setRowFactory(new Callback<TableView<MonthlyFinance>, TableRow<MonthlyFinance>>() {

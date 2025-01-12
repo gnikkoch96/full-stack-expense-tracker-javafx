@@ -377,4 +377,12 @@ public class DashboardView implements View{
     public void setLoadingAnimationPane(LoadingAnimationPane loadingAnimationPane) {
         this.loadingAnimationPane = loadingAnimationPane;
     }
+
+    public Button getViewChartButton() {
+        return viewChartButton;
+    }
+
+    public void setViewChartButton(Button viewChartButton) {
+        this.viewChartButton = viewChartButton;
+    }
 }
