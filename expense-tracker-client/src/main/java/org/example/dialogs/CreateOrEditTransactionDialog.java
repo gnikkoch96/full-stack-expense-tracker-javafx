@@ -236,8 +236,8 @@ public class CreateOrEditTransactionDialog extends CustomDialog{
         String transactionType = ((RadioButton) transactionTypeToggleGroup.getSelectedToggle()).getText();
         transactionData.addProperty("transactionType", transactionType);
 
-        // update transaction component
-        updateTransactionComponent(transactionName, transactionAmount, transactionDate, transactionType, category);
+        if(transactionComponent != null)
+            updateTransactionComponent(transactionName, transactionAmount, transactionDate, transactionType, category);
 
         return transactionData;
     }

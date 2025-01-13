@@ -210,14 +210,17 @@ public class DashboardView implements View{
         // we use PropertyValueFactory to extract the month/income/expense data from our MonthlyFinance data model
         monthColumn.setCellValueFactory(new PropertyValueFactory<>("month"));
         monthColumn.getStyleClass().addAll("main-background", "text-size-md", "text-light-gray");
+        monthColumn.setResizable(false);
 
         incomeColumn = new TableColumn<>("Income");
         incomeColumn.setCellValueFactory(new PropertyValueFactory<>("income"));
         incomeColumn.getStyleClass().addAll("main-background", "text-size-md", "text-light-gray");
+        incomeColumn.setResizable(false);
 
         expenseColumn = new TableColumn<>("Expense");
         expenseColumn.setCellValueFactory(new PropertyValueFactory<>("expense"));
         expenseColumn.getStyleClass().addAll("main-background", "text-size-md", "text-light-gray");
+        expenseColumn.setResizable(false);
 
         transactionsTable.getColumns().addAll(monthColumn, incomeColumn, expenseColumn);
         VBox.setVgrow(transactionsTable, Priority.ALWAYS);
@@ -269,7 +272,7 @@ public class DashboardView implements View{
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                double colsWidth = transactionsTable.getWidth() * (0.33);
+                double colsWidth = transactionsTable.getWidth() * (0.335);
                 monthColumn.setPrefWidth(colsWidth);
                 incomeColumn.setPrefWidth(colsWidth);
                 expenseColumn.setPrefWidth(colsWidth);
