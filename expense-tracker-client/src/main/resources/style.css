@@ -61,6 +61,13 @@ ScrollPane > .viewport {
     -fx-text-fill: #fff;
 }
 
+/* bar chart stuff*/
+
+/* styles the axis labels */
+.axis-label {
+    -fx-text-fill: #BEB9B9;
+}
+
 /* text */
 .text-size-lg{
     -fx-font-size: 36px;
