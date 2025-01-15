@@ -6,8 +6,11 @@ import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Paint;
 import org.example.models.MonthlyFinance;
 import org.example.models.User;
+
+import java.awt.*;
 
 public class ViewChartDialog extends CustomDialog{
     private ObservableList<MonthlyFinance> monthlyFinances;
@@ -25,9 +28,11 @@ public class ViewChartDialog extends CustomDialog{
 
         CategoryAxis xAxis = new CategoryAxis();
         xAxis.setLabel("Month");
+        xAxis.setTickLabelFill(Paint.valueOf("#BEB9B9"));
 
         NumberAxis yAxis = new NumberAxis();
         yAxis.setLabel("Value");
+        yAxis.setTickLabelFill(Paint.valueOf("#BEB9B9"));
 
         barChart = new BarChart<>(xAxis, yAxis);
         barChart.setMinWidth(getWidth() - 25);
@@ -50,14 +55,13 @@ public class ViewChartDialog extends CustomDialog{
 
         // update the colors for income
         incomeSeries.getData().forEach(data ->
-                data.getNode().setStyle("-fx-bar-fill: green;")
+                data.getNode().setStyle("-fx-bar-fill: #33ba2f;")
         );
 
-        // update the colors for expense
+        // Style the expense series (series 1)
         expenseSeries.getData().forEach(data ->
-                data.getNode().setStyle("-fx-bar-fill: red;")
+                data.getNode().setStyle("-fx-bar-fill: #ba2f2f;")
         );
-
 
         vbox.getChildren().add(barChart);
         getDialogPane().getChildren().add(vbox);

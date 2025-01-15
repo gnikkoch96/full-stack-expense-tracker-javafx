@@ -68,6 +68,14 @@ ScrollPane > .viewport {
     -fx-text-fill: #BEB9B9;
 }
 
+.default-color0.chart-legend-item-symbol{
+   -fx-background-color: #33ba2f;
+}
+
+.default-color1.chart-legend-item-symbol{
+   -fx-background-color: #ba2f2f;
+}
+
 /* text */
 .text-size-lg{
     -fx-font-size: 36px;
