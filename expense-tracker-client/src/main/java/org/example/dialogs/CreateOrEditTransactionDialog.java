@@ -250,7 +250,7 @@ public class CreateOrEditTransactionDialog extends CustomDialog{
         // category
         if(transactionCategory != null){
             transactionComponent.getTransactionCategoryLabel().setText(transactionCategory.getCategoryName());
-            transactionComponent.getTransactionCategoryLabel().setStyle("-fx-background: #" + transactionCategory.getCategoryColor());
+            transactionComponent.getTransactionCategoryLabel().setStyle("-fx-text-fill: #" + transactionCategory.getCategoryColor());
         }
 
         // amount

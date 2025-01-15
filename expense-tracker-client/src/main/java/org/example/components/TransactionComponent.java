@@ -30,7 +30,7 @@ public class TransactionComponent extends HBox {
         setAlignment(Pos.CENTER_LEFT);
         getStyleClass().addAll("padding-10px", "rounded-border", "main-background");
 
-        VBox catNameDateBox = createCatNameDateBox();
+        VBox catNameDateBox = createCategoryNameAndDateBox();
 
         // horizontal space
         Region region = new Region();
@@ -52,7 +52,7 @@ public class TransactionComponent extends HBox {
         getChildren().addAll(catNameDateBox, region, transactionAmount, actionButtons);
     }
 
-    private VBox createCatNameDateBox(){
+    private VBox createCategoryNameAndDateBox(){
         VBox catNameDateBox = new VBox();
 
         if(transaction.getTransactionCategory() != null) {
@@ -61,10 +61,10 @@ public class TransactionComponent extends HBox {
             // N: must add a # in front, for proper formatting
             transactionCategoryLabel.setTextFill(Paint.valueOf("#" + transaction.getTransactionCategory().getCategoryColor()));
         }else {
+            // no category so we label it undefined
             transactionCategoryLabel = new Label("Undefined");
             transactionCategoryLabel.getStyleClass().addAll("text-light-gray");
         }
-
 
         transactionNameLabel = new Label(transaction.getTransactionName());
         transactionNameLabel.getStyleClass().addAll("text-light-gray", "text-size-md");
@@ -140,8 +140,6 @@ public class TransactionComponent extends HBox {
     public Label getTransactionDateLabel() {
         return transactionDateLabel;
     }
-
-
 }
 
 

@@ -19,7 +19,6 @@ import org.example.utils.Util;
 // we will use this to create a component for each category that we retrieve
 public class CategoryComponent extends HBox{
     private DashboardController dashboardController;
-
     private TransactionCategory transactionCategory;
 
     private TextField categoryTextField;

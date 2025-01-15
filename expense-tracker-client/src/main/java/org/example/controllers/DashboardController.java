@@ -66,11 +66,15 @@ public class DashboardController {
         user = SqlUtil.getUserByEmail(dashboardView.getEmail());
         allUserTransactions = SqlUtil.getAllTransactionsByUserId(user.getId(), null, null);
 
-        // getting by filter instead of querying database
-        currentTransactionsByYear = allUserTransactions.stream()
-                .filter(transaction -> transaction.getTransactionDate().getYear() == currentYear)
-                .collect(Collectors.toList());
-        //        currentTransactionsByYear = SqlUtil.getAllTransactionsByUserId(user.getId(), currentYear, null);
+        // edge case: user starts with no data so no need to fetch
+        if(allUserTransactions != null) {
+            // getting by filter instead of querying database
+            currentTransactionsByYear = allUserTransactions.stream()
+                    .filter(transaction -> transaction.getTransactionDate().getYear() == currentYear)
+                    .collect(Collectors.toList());
+            //        currentTransactionsByYear = SqlUtil.getAllTransactionsByUserId(user.getId(), currentYear, null);
+
+        }
 
         // get recent transactions
         recentTransactions = SqlUtil.getRecentTransactionsByUserId(user.getId(), 0, currentPage, recentTransactionSize);
