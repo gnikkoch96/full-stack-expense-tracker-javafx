@@ -48,7 +48,6 @@ public class DashboardController {
         addContentActions();
         addTableActions();
 
-        // todo refactor (possibly put this in its own method)
         dashboardView.getViewChartButton().setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {

@@ -235,7 +235,6 @@ public class DashboardView implements View{
         VBox transactionContentBox = new VBox();
 
         // label and button
-        // todo clean up
         HBox transactionLabelAndButton = new HBox();
         recentTransactionLabel.getStyleClass().addAll("text-size-lg", "text-light-gray");
 
@@ -255,9 +254,7 @@ public class DashboardView implements View{
         // makes scroll pane take up the width and height of its parent
         recentTransactionsScrollPane.setFitToWidth(true);
         recentTransactionsScrollPane.setFitToHeight(true);
-
-//        VBox.setVgrow(recentTransactionScrollpane, Priority.ALWAYS);
-
+        
         transactionContentBox.getChildren().addAll(transactionLabelAndButton, recentTransactionsScrollPane);
         return transactionContentBox;
     }
